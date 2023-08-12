@@ -1,13 +1,14 @@
 export type Todo = {
+  id: string;
   name: string;
   description?: string;
   dueDate: Date;
-  sector: string;
+  sector: Sector["id"];
   priority: Priority;
   status: Status;
 };
 
-export type TodoList = Todo[];
+export type Sector = { id: string; name: string; color: string };
 
 export type Priority = "Alta" | "Média" | "Baixa";
 
