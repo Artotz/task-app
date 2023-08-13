@@ -3,7 +3,7 @@ export type Todo = {
   name: string;
   description?: string;
   dueDate: Date;
-  sector: Sector["id"];
+  sectorId: Sector["id"];
   priority: Priority;
   status: Status;
 };
