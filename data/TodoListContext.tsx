@@ -20,7 +20,7 @@ export function TodoListProvider({ children }: { children: any }) {
       id: "1",
       name: "nome",
       description: "descrição",
-      dueDate: new Date(),
+      dueDate: new Date().toString(),
       sectorId: "1",
       priority: "Média",
       status: "Em andamento",
@@ -29,8 +29,62 @@ export function TodoListProvider({ children }: { children: any }) {
       id: "2",
       name: "nome2",
       description: "descrição2",
-      dueDate: new Date(),
+      dueDate: new Date().toString(),
       sectorId: "2",
+      priority: "Alta",
+      status: "Pendente",
+    },
+    {
+      id: "3",
+      name: "nome3",
+      description: "descrição3",
+      dueDate: new Date().toString(),
+      sectorId: "1",
+      priority: "Baixa",
+      status: "Em andamento",
+    },
+    {
+      id: "4",
+      name: "nome4",
+      description: "descrição4",
+      dueDate: new Date().toString(),
+      sectorId: "2",
+      priority: "Alta",
+      status: "Pendente",
+    },
+    {
+      id: "5",
+      name: "nome5",
+      description: "descrição5",
+      dueDate: new Date().toString(),
+      sectorId: "1",
+      priority: "Alta",
+      status: "Pendente",
+    },
+    {
+      id: "6",
+      name: "nome6",
+      description: "descrição6",
+      dueDate: new Date().toString(),
+      sectorId: "2",
+      priority: "Alta",
+      status: "Pendente",
+    },
+    {
+      id: "7",
+      name: "nome7",
+      description: "descrição7",
+      dueDate: new Date().toString(),
+      sectorId: "1",
+      priority: "Alta",
+      status: "Pendente",
+    },
+    {
+      id: "8",
+      name: "nome8",
+      description: "descrição8",
+      dueDate: new Date().toString(),
+      sectorId: "1",
       priority: "Alta",
       status: "Pendente",
     },
@@ -51,7 +105,10 @@ export function TodoListProvider({ children }: { children: any }) {
   const addTodo: ContextValues["addTodo"] = (todo) => {
     let todoListCopy = JSON.parse(JSON.stringify(todoList)) as ContextValues["todoList"];
 
-    todoListCopy.push({ ...todo, id: Date.now().toString() });
+    todoListCopy.push({
+      ...todo,
+      id: todoList.length == 0 ? "1" : (parseInt(todoList[todoList.length - 1].id) + 1).toString(),
+    });
 
     setTodoList(todoListCopy);
   };

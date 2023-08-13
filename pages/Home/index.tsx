@@ -1,20 +1,26 @@
 import { useState } from "react";
 import { Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
+import { NavigationContainer } from "@react-navigation/native";
 
 import useTodoList from "../../data/TodoListContext";
+import AddTodo from "../AddTodo";
 
-export default function Home() {
+export default function Home({ navigation }: { navigation: any }) {
   const { todoList, findSectorById } = useTodoList();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModal2Visible, setIsModal2Visible] = useState(false);
 
   return (
     <View style={styles.container}>
+      {/* Header Component */}
       <View style={styles.header}>
         <Text>Cabeça</Text>
         <Button onPress={() => setIsModal2Visible(true)} title="button"></Button>
       </View>
+
+      {/* Main Section */}
       <View style={styles.textInputArea}>
         <TextInput style={styles.textInput}></TextInput>
       </View>
@@ -30,6 +36,7 @@ export default function Home() {
               <Text>
                 {item.name} setor: {findSectorById(item.sectorId)?.name}
               </Text>
+              <Text>{item.dueDate}</Text>
             </View>
           )}
         />
@@ -37,6 +44,8 @@ export default function Home() {
       <View style={styles.addButton}>
         <Button onPress={() => setIsModalVisible(true)} title="button"></Button>
       </View>
+
+      {/* AddTodo Modal */}
       <ReactNativeModal
         style={{ marginHorizontal: 0, marginBottom: 0, marginTop: 180 }}
         animationIn="slideInUp"
@@ -45,61 +54,10 @@ export default function Home() {
         isVisible={isModalVisible}
         onBackButtonPress={() => setIsModalVisible(false)}
       >
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text>Adicionar Tarefa</Text>
-            <Button onPress={() => setIsModalVisible(false)} title="button"></Button>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingVertical: 50,
-              paddingHorizontal: 20,
-            }}
-          >
-            <View>
-              <Text>Nome</Text>
-              <TextInput style={styles.textInput}></TextInput>
-            </View>
-            <View>
-              <Text>Descrição (opcional)</Text>
-              <TextInput style={styles.textInput}></TextInput>
-            </View>
-            <View style={{ flex: 0, flexDirection: "row", justifyContent: "space-between" }}>
-              <View style={{ paddingHorizontal: 20 }}>
-                <Text>Data limite</Text>
-                <TextInput style={styles.textInput}></TextInput>
-              </View>
-              <View style={{ paddingHorizontal: 20 }}>
-                <Text>Setor</Text>
-                <TextInput style={styles.textInput}></TextInput>
-              </View>
-            </View>
-            <View style={{ flex: 0, flexDirection: "row", justifyContent: "space-between" }}>
-              <View style={{ paddingHorizontal: 20 }}>
-                <Text>Prioridade</Text>
-                <TextInput style={styles.textInput}></TextInput>
-              </View>
-              <View style={{ paddingHorizontal: 20 }}>
-                <Text>Status</Text>
-                <TextInput style={styles.textInput}></TextInput>
-              </View>
-            </View>
-            <View
-              style={{
-                flex: 0,
-                flexDirection: "row",
-              }}
-            >
-              <Button title="Cancelar"></Button>
-              <View style={{ width: 50 }}></View>
-              <Button title="Salvar"></Button>
-            </View>
-          </View>
-        </View>
+        <AddTodo handleCloseButton={() => setIsModalVisible(false)} />
       </ReactNativeModal>
+
+      {/* PagesListHamburguerMenu Component */}
       <ReactNativeModal
         style={{ marginVertical: 0, marginLeft: 120, marginRight: 0 }}
         animationIn="slideInRight"
@@ -117,10 +75,17 @@ export default function Home() {
             <Button title="button"></Button>
           </View>
           <View style={{ padding: 10 }}>
-            <Button title="button"></Button>
+            <Button
+              onPress={() => {
+                setIsModal2Visible(false);
+                navigation.navigate("SectorPage");
+              }}
+              title="button"
+            ></Button>
           </View>
         </View>
       </ReactNativeModal>
+
       <StatusBar />
     </View>
   );
