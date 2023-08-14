@@ -1,9 +1,12 @@
 import { createContext, useContext, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { Sector, Todo } from "../types/todo";
 
 type ContextValues = {
   todoList: Todo[];
   sectorList: Sector[];
+  initialize: () => void;
   addTodo: (todo: Omit<Todo, "id">) => void;
   editTodo: (todo: Omit<Todo, "id">, id: Todo["id"]) => void;
   deleteTodo: (id: Todo["id"]) => void;
@@ -15,92 +18,18 @@ type ContextValues = {
 const TodoListContext = createContext({} as ContextValues);
 
 export function TodoListProvider({ children }: { children: any }) {
-  const [todoList, setTodoList] = useState<ContextValues["todoList"]>([
-    {
-      id: "1",
-      name: "nome",
-      description: "descrição",
-      dueDate: new Date().toString(),
-      sectorId: "1",
-      priority: "Média",
-      status: "Em andamento",
-    },
-    {
-      id: "2",
-      name: "nome2",
-      description: "descrição2",
-      dueDate: new Date().toString(),
-      sectorId: "2",
-      priority: "Alta",
-      status: "Pendente",
-    },
-    {
-      id: "3",
-      name: "nome3",
-      description: "descrição3",
-      dueDate: new Date().toString(),
-      sectorId: "1",
-      priority: "Baixa",
-      status: "Em andamento",
-    },
-    {
-      id: "4",
-      name: "nome4",
-      description: "descrição4",
-      dueDate: new Date().toString(),
-      sectorId: "2",
-      priority: "Alta",
-      status: "Pendente",
-    },
-    {
-      id: "5",
-      name: "nome5",
-      description: "descrição5",
-      dueDate: new Date().toString(),
-      sectorId: "1",
-      priority: "Alta",
-      status: "Pendente",
-    },
-    {
-      id: "6",
-      name: "nome6",
-      description: "descrição6",
-      dueDate: new Date().toString(),
-      sectorId: "2",
-      priority: "Alta",
-      status: "Pendente",
-    },
-    {
-      id: "7",
-      name: "nome7",
-      description: "descrição7",
-      dueDate: new Date().toString(),
-      sectorId: "1",
-      priority: "Alta",
-      status: "Pendente",
-    },
-    {
-      id: "8",
-      name: "nome8",
-      description: "descrição8",
-      dueDate: new Date().toString(),
-      sectorId: "1",
-      priority: "Alta",
-      status: "Pendente",
-    },
-  ]);
-  const [sectorList, setSectorList] = useState<ContextValues["sectorList"]>([
-    {
-      id: "1",
-      name: "sector nome",
-      color: "#A00",
-    },
-    {
-      id: "2",
-      name: "sector nome2",
-      color: "#0A0",
-    },
-  ]);
+  const [todoList, setTodoList] = useState<ContextValues["todoList"]>([]);
+  const [sectorList, setSectorList] = useState<ContextValues["sectorList"]>([]);
+
+  const initialize: ContextValues["initialize"] = async () => {
+    const storedTodoList = JSON.parse((await AsyncStorage.getItem("todoList")) || "[]") as ContextValues["todoList"];
+    setTodoList(storedTodoList);
+
+    const storedSectorList = JSON.parse(
+      (await AsyncStorage.getItem("sectorList")) || "[]"
+    ) as ContextValues["sectorList"];
+    setSectorList(storedSectorList);
+  };
 
   const addTodo: ContextValues["addTodo"] = (todo) => {
     let todoListCopy = JSON.parse(JSON.stringify(todoList)) as ContextValues["todoList"];
@@ -111,6 +40,7 @@ export function TodoListProvider({ children }: { children: any }) {
     });
 
     setTodoList(todoListCopy);
+    AsyncStorage.setItem("todoList", JSON.stringify(todoListCopy));
   };
 
   const editTodo: ContextValues["editTodo"] = (todo, id) => {
@@ -120,6 +50,7 @@ export function TodoListProvider({ children }: { children: any }) {
     todoListCopy.push({ ...todo, id });
 
     setTodoList(todoListCopy);
+    AsyncStorage.setItem("todoList", JSON.stringify(todoListCopy));
   };
 
   const deleteTodo: ContextValues["deleteTodo"] = (id) => {
@@ -128,14 +59,19 @@ export function TodoListProvider({ children }: { children: any }) {
     todoListCopy = todoListCopy.filter((todo) => todo.id !== id);
 
     setTodoList(todoListCopy);
+    AsyncStorage.setItem("todoList", JSON.stringify(todoListCopy));
   };
 
   const addSector: ContextValues["addSector"] = (sector) => {
     let sectorListCopy = JSON.parse(JSON.stringify(sectorList)) as ContextValues["sectorList"];
 
-    sectorListCopy.push({ ...sector, id: Date.now().toString() });
+    sectorListCopy.push({
+      ...sector,
+      id: sectorList.length == 0 ? "1" : (parseInt(sectorList[sectorList.length - 1].id) + 1).toString(),
+    });
 
     setSectorList(sectorListCopy);
+    AsyncStorage.setItem("sectorList", JSON.stringify(sectorListCopy));
   };
 
   const deleteSector: ContextValues["deleteSector"] = (id) => {
@@ -144,6 +80,7 @@ export function TodoListProvider({ children }: { children: any }) {
     sectorListCopy = sectorListCopy.filter((sector) => sector.id !== id);
 
     setSectorList(sectorListCopy);
+    AsyncStorage.setItem("sectorList", JSON.stringify(sectorListCopy));
   };
 
   const findSectorById: ContextValues["findSectorById"] = (id) => {
@@ -158,6 +95,7 @@ export function TodoListProvider({ children }: { children: any }) {
         {
           todoList,
           sectorList,
+          initialize,
           addTodo,
           editTodo,
           deleteTodo,

@@ -1,50 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
-import { Alert, BackHandler, Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import { Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
-import { useFocusEffect } from "@react-navigation/native";
 
 import useTodoList from "../../data/TodoListContext";
-import AddTodo from "../AddTodo";
+import AddSector from "../AddSector";
 
-import { Todo } from "../../types/todo";
-
-export default function Home({ navigation }: { navigation: any }) {
-  const { todoList, initialize, findSectorById } = useTodoList();
-
-  useEffect(() => {
-    initialize();
-  }, []);
-
-  const [todoListFiltered, setTodoListFiltered] = useState(JSON.parse(JSON.stringify(todoList)) as Todo[]);
-  useEffect(() => {
-    setTodoListFiltered(JSON.parse(JSON.stringify(todoList)) as Todo[]);
-  }, [todoList]);
-
-  const filterTodoList = (text: string) => {
-    let todoListCopy = JSON.parse(JSON.stringify(todoList)) as Todo[];
-
-    if (text === "") {
-      setTodoListFiltered(todoListCopy);
-      return;
-    }
-    setTodoListFiltered(todoListCopy.filter((todo) => todo.name.toLowerCase().includes(text.toLowerCase())));
-  };
+export default function SectorPage({ navigation }: { navigation: any }) {
+  const { sectorList, deleteSector } = useTodoList();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModal2Visible, setIsModal2Visible] = useState(false);
-
-  // Override BackButton Behaviour (Closing the App on Home Page)
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => {
-        return true;
-      };
-
-      const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-      return () => subscription.remove();
-    }, [])
-  );
 
   return (
     <View style={styles.container}>
@@ -55,22 +20,16 @@ export default function Home({ navigation }: { navigation: any }) {
       </View>
 
       {/* Main Section */}
-      <View style={styles.textInputArea}>
-        <TextInput onChangeText={(text) => filterTodoList(text)} style={styles.textInput}></TextInput>
-      </View>
-      <View style={styles.filterInputArea}>
-        <Button title="button"></Button>
-        <Button title="button"></Button>
+      <View style={styles.innerHeader}>
+        <Text>Setores</Text>
       </View>
       <View style={styles.listArea}>
         <FlatList
-          data={todoListFiltered}
+          data={sectorList}
           renderItem={({ item }) => (
             <View style={styles.listItem}>
-              <Text>
-                {item.name} setor: {findSectorById(item.sectorId)?.name}
-              </Text>
-              <Text>{item.dueDate}</Text>
+              <Text>{item.name}</Text>
+              <Button onPress={() => deleteSector(item.id)} title="button"></Button>
             </View>
           )}
         />
@@ -88,7 +47,7 @@ export default function Home({ navigation }: { navigation: any }) {
         isVisible={isModalVisible}
         onBackButtonPress={() => setIsModalVisible(false)}
       >
-        <AddTodo handleCloseButton={() => setIsModalVisible(false)} />
+        <AddSector handleCloseButton={() => setIsModalVisible(false)} />
       </ReactNativeModal>
 
       {/* PagesListHamburguerMenu Component */}
@@ -146,6 +105,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     maxHeight: 60,
   },
+  innerHeader: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    maxHeight: 60,
+  },
   textInputArea: {
     height: 80,
     alignItems: "center",
@@ -177,8 +145,11 @@ const styles = StyleSheet.create({
   },
   listItem: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
     marginVertical: 10,
     backgroundColor: "#AAA",
   },

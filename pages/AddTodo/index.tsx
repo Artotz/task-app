@@ -20,6 +20,7 @@ export default function AddTodo(props: AddTodoProps) {
 
   const handleAddTodo = (todo: Omit<Todo, "id">) => {
     addTodo(todo);
+    props.handleCloseButton();
   };
 
   return (
@@ -68,74 +69,97 @@ export default function AddTodo(props: AddTodoProps) {
         {errors.description && <Text>{errors.description.message}</Text>}
 
         {/* DueDate and Sector */}
-        <View style={{ flex: 0, flexDirection: "row", justifyContent: "space-between" }}>
-          <Controller
-            control={control}
-            render={({ field: { onChange } }) => (
-              <TextInput
-                onChangeText={onChange}
-                placeholder="Due Date"
-                style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
-              />
-            )}
-            name="dueDate"
-            rules={{ required: "Due Date is required" }}
-          />
-          {errors.dueDate && <Text>{errors.dueDate.message}</Text>}
+        <View style={styles.containerFlowRow}>
+          <View>
+            <Controller
+              control={control}
+              render={({ field: { onChange } }) => (
+                <TextInput
+                  onChangeText={onChange}
+                  placeholder="Due Date"
+                  style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
+                />
+              )}
+              name="dueDate"
+              rules={{ required: "Due Date is required" }}
+            />
+            {errors.dueDate && <Text>{errors.dueDate.message}</Text>}
+          </View>
 
-          <Controller
-            control={control}
-            render={({ field }) => (
-              <Picker selectedValue={field.value} onValueChange={field.onChange} style={styles.picker}>
-                {/* Initial option with undefined value */}
-                <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
+          <View>
+            <Controller
+              control={control}
+              render={({ field }) => (
+                <Picker
+                  selectedValue={field.value}
+                  onValueChange={field.onChange}
+                  style={styles.picker}
+                  mode="dropdown"
+                >
+                  {/* Initial option with undefined value */}
+                  <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
 
-                {sectorList.map((sector) => (
-                  <Picker.Item key={sector.id} label={sector.name} value={sector.id} color="#000" />
-                ))}
-              </Picker>
-            )}
-            name="sectorId"
-            rules={{ required: "Sector is required" }}
-          />
-          {errors.sectorId && <Text>{errors.sectorId.message}</Text>}
+                  {sectorList.map((sector) => (
+                    <Picker.Item key={sector.id} label={sector.name} value={sector.id} color="#000" />
+                  ))}
+                </Picker>
+              )}
+              name="sectorId"
+              rules={{ required: "Sector is required" }}
+            />
+            {errors.sectorId && <Text>{errors.sectorId.message}</Text>}
+          </View>
         </View>
 
         {/* Priority and Status */}
-        <View style={{ flex: 0, flexDirection: "row", justifyContent: "space-between" }}>
-          <Controller
-            control={control}
-            render={({ field }) => (
-              <Picker selectedValue={field.value} onValueChange={field.onChange} style={styles.picker}>
-                {/* Initial option with undefined value */}
-                <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
+        <View style={styles.containerFlowRow}>
+          <View>
+            <Controller
+              control={control}
+              render={({ field }) => (
+                <Picker
+                  selectedValue={field.value}
+                  onValueChange={field.onChange}
+                  style={styles.picker}
+                  mode="dropdown"
+                >
+                  {/* Initial option with undefined value */}
+                  <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
 
-                {PriorityTypes.map((priority, index) => (
-                  <Picker.Item key={index} label={priority} value={priority} color="#000" />
-                ))}
-              </Picker>
-            )}
-            name="priority"
-            rules={{ required: "Priority is required" }}
-          />
-          {errors.priority && <Text>{errors.priority.message}</Text>}
+                  {PriorityTypes.map((priority, index) => (
+                    <Picker.Item key={index} label={priority} value={priority} color="#000" />
+                  ))}
+                </Picker>
+              )}
+              name="priority"
+              rules={{ required: "Priority is required" }}
+            />
+            {errors.priority && <Text>{errors.priority.message}</Text>}
+          </View>
 
-          <Controller
-            control={control}
-            render={({ field }) => (
-              <Picker selectedValue={field.value} onValueChange={field.onChange} style={styles.picker}>
-                {/* Initial option with undefined value */}
-                <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
+          <View>
+            <Controller
+              control={control}
+              render={({ field }) => (
+                <Picker
+                  selectedValue={field.value}
+                  onValueChange={field.onChange}
+                  style={styles.picker}
+                  mode="dropdown"
+                >
+                  {/* Initial option with undefined value */}
+                  <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
 
-                {StatusTypes.map((status, index) => (
-                  <Picker.Item key={index} label={status} value={status} color="#000" />
-                ))}
-              </Picker>
-            )}
-            name="status"
-            rules={{ required: "Status is required" }}
-          />
-          {errors.status && <Text>{errors.status.message}</Text>}
+                  {StatusTypes.map((status, index) => (
+                    <Picker.Item key={index} label={status} value={status} color="#000" />
+                  ))}
+                </Picker>
+              )}
+              name="status"
+              rules={{ required: "Status is required" }}
+            />
+            {errors.status && <Text>{errors.status.message}</Text>}
+          </View>
         </View>
 
         <Button title="Submit" onPress={handleSubmit(onSubmit)} />
@@ -148,6 +172,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  containerFlowRow: {
+    flex: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   header: {
     flex: 1,
@@ -203,11 +232,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   picker: {
-    borderWidth: 1,
-    marginBottom: 10,
-    marginHorizontal: 50,
-    width: 150,
-    height: 30,
     backgroundColor: "#DDD",
+    width: 170,
   },
 });
