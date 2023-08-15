@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import { BackHandler, Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { BackHandler, FlatList, Button, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
 import { useFocusEffect } from "@react-navigation/native";
 
 import useTodoList from "../../data/TodoListContext";
 import AddTodo from "../../views/AddTodo";
 import { Priority, PriorityTypes, Sector, Todo } from "../../types/todo";
+
+import ButtonX from "../../components/Button";
 
 import { ButtonStyled, SearchBarStyled } from "./styles";
 import FilterTodoList from "../../views/FilterTodoList";
@@ -141,7 +143,7 @@ export default function Home({ navigation }: { navigation: any }) {
         />
       </View>
       <View style={styles.addButton}>
-        <Button onPress={() => setIsModalVisible(true)} title="button"></Button>
+        <ButtonX onPress={() => setIsModalVisible(true)}> Meme </ButtonX>
       </View>
 
       {/* AddTodo Modal */}
