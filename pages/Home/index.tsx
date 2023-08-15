@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
-import { Alert, BackHandler, Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { BackHandler, Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
 import { useFocusEffect } from "@react-navigation/native";
 
 import useTodoList from "../../data/TodoListContext";
-import AddTodo from "../AddTodo";
+import AddTodo from "../../views/AddTodo";
+import { Priority, PriorityTypes, Sector, Todo } from "../../types/todo";
 
-import { Todo } from "../../types/todo";
+import { ButtonStyled, SearchBarStyled } from "./styles";
+import FilterTodoList from "../../views/FilterTodoList";
 
 export default function Home({ navigation }: { navigation: any }) {
-  const { todoList, initialize, findSectorById } = useTodoList();
+  const { todoList, sectorList, initialize, findSectorById } = useTodoList();
 
   useEffect(() => {
     initialize();
@@ -20,7 +22,7 @@ export default function Home({ navigation }: { navigation: any }) {
     setTodoListFiltered(JSON.parse(JSON.stringify(todoList)) as Todo[]);
   }, [todoList]);
 
-  const filterTodoList = (text: string) => {
+  const filterTodoListByName = (text: string) => {
     let todoListCopy = JSON.parse(JSON.stringify(todoList)) as Todo[];
 
     if (text === "") {
@@ -30,8 +32,71 @@ export default function Home({ navigation }: { navigation: any }) {
     setTodoListFiltered(todoListCopy.filter((todo) => todo.name.toLowerCase().includes(text.toLowerCase())));
   };
 
+  const [sectorSelectionList, setSectorSelectionList] = useState([] as (Sector & { selected: boolean })[]);
+  useEffect(() => {
+    let sectorSelectionListTemp = sectorList.map((sector) => {
+      return { ...sector, selected: false };
+    });
+
+    setSectorSelectionList(sectorSelectionListTemp);
+  }, [sectorList]);
+  const handleSectorSelection = (sectorIndex: number) => {
+    let sectorSelectionListCopy = JSON.parse(JSON.stringify(sectorSelectionList)) as (Sector & { selected: boolean })[];
+    sectorSelectionListCopy[sectorIndex].selected = !sectorSelectionListCopy[sectorIndex].selected;
+    setSectorSelectionList(sectorSelectionListCopy);
+  };
+
+  const [prioritySelectionList, setPrioritySelectionList] = useState(
+    PriorityTypes.map((priority) => {
+      return { priority: priority, selected: false } as { priority: Priority; selected: boolean };
+    })
+  );
+  const handlePrioritySelection = (priorityIndex: number) => {
+    let prioritySelectionListCopy = JSON.parse(JSON.stringify(prioritySelectionList)) as {
+      priority: Priority;
+      selected: boolean;
+    }[];
+    prioritySelectionListCopy[priorityIndex].selected = !prioritySelectionListCopy[priorityIndex].selected;
+    setPrioritySelectionList(prioritySelectionListCopy);
+  };
+
+  const filterTodoListByTag = () => {
+    let todoListCopy = JSON.parse(JSON.stringify(todoList)) as Todo[];
+
+    let selectedSectors = sectorSelectionList.filter((sector) => sector.selected);
+    let selectedPriorities = prioritySelectionList.filter((priority) => priority.selected);
+
+    if (selectedSectors.length + selectedPriorities.length === 0) {
+      setTodoListFiltered(todoListCopy);
+      return;
+    }
+
+    todoListCopy = todoListCopy.filter((todo) => {
+      let sectorCheck = false;
+      let priorityCheck = false;
+      selectedSectors.map((sector) => {
+        if (sector.id === todo.sectorId) {
+          sectorCheck = true;
+        }
+      });
+
+      selectedPriorities.map((priority) => {
+        if (priority.priority === todo.priority) {
+          priorityCheck = true;
+        }
+      });
+
+      return sectorCheck || priorityCheck;
+    });
+
+    console.log(todoListCopy);
+
+    setTodoListFiltered(todoListCopy);
+  };
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModal2Visible, setIsModal2Visible] = useState(false);
+  const [isModal3Visible, setIsModal3Visible] = useState(false);
 
   // Override BackButton Behaviour (Closing the App on Home Page)
   useFocusEffect(
@@ -50,16 +115,16 @@ export default function Home({ navigation }: { navigation: any }) {
     <View style={styles.container}>
       {/* Header Component */}
       <View style={styles.header}>
-        <Text>Cabeça</Text>
+        <Text style={{ color: "white" }}>Cabeça</Text>
         <Button onPress={() => setIsModal2Visible(true)} title="button"></Button>
       </View>
 
       {/* Main Section */}
       <View style={styles.textInputArea}>
-        <TextInput onChangeText={(text) => filterTodoList(text)} style={styles.textInput}></TextInput>
+        <SearchBarStyled placeholder="Procurar" onChangeText={(text) => filterTodoListByName(text)}></SearchBarStyled>
       </View>
       <View style={styles.filterInputArea}>
-        <Button title="button"></Button>
+        <Button onPress={() => setIsModal3Visible(true)} title="button"></Button>
         <Button title="button"></Button>
       </View>
       <View style={styles.listArea}>
@@ -87,6 +152,7 @@ export default function Home({ navigation }: { navigation: any }) {
         backdropTransitionOutTiming={0}
         isVisible={isModalVisible}
         onBackButtonPress={() => setIsModalVisible(false)}
+        onBackdropPress={() => setIsModalVisible(false)}
       >
         <AddTodo handleCloseButton={() => setIsModalVisible(false)} />
       </ReactNativeModal>
@@ -99,6 +165,7 @@ export default function Home({ navigation }: { navigation: any }) {
         backdropTransitionOutTiming={0}
         isVisible={isModal2Visible}
         onBackButtonPress={() => setIsModal2Visible(false)}
+        onBackdropPress={() => setIsModal2Visible(false)}
       >
         <View style={styles.container}>
           <View style={styles.header}>
@@ -126,6 +193,25 @@ export default function Home({ navigation }: { navigation: any }) {
         </View>
       </ReactNativeModal>
 
+      {/* FilterTodoList Modal */}
+      <ReactNativeModal
+        style={{ marginVertical: 180, marginHorizontal: 30 }}
+        animationIn="zoomIn"
+        animationOut="zoomOut"
+        backdropTransitionOutTiming={0}
+        isVisible={isModal3Visible}
+        onBackButtonPress={() => setIsModal3Visible(false)}
+        onBackdropPress={() => setIsModal3Visible(false)}
+      >
+        <FilterTodoList
+          sectorSelectionList={sectorSelectionList}
+          handleSectorSelection={handleSectorSelection}
+          prioritySelectionList={prioritySelectionList}
+          handlePrioritySelection={handlePrioritySelection}
+          handleSubmit={filterTodoListByTag}
+        ></FilterTodoList>
+      </ReactNativeModal>
+
       <StatusBar />
     </View>
   );
@@ -140,7 +226,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#DAD",
+    backgroundColor: "#055BCE",
     justifyContent: "space-between",
     paddingHorizontal: 30,
     paddingVertical: 10,
@@ -149,7 +235,6 @@ const styles = StyleSheet.create({
   textInputArea: {
     height: 80,
     alignItems: "center",
-    backgroundColor: "#AAA",
     justifyContent: "center",
   },
   textInput: {
@@ -163,7 +248,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#A3A",
     justifyContent: "space-between",
     paddingHorizontal: 60,
     maxHeight: 60,

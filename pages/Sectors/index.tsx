@@ -3,7 +3,7 @@ import { Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "
 import ReactNativeModal from "react-native-modal";
 
 import useTodoList from "../../data/TodoListContext";
-import AddSector from "../AddSector";
+import AddSector from "../../views/AddSector";
 
 export default function SectorPage({ navigation }: { navigation: any }) {
   const { sectorList, deleteSector } = useTodoList();
