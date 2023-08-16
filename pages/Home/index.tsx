@@ -9,6 +9,7 @@ import { Priority, PriorityTypes, Sector, Todo } from "../../types/todo";
 
 import { ButtonStyled, SearchBarStyled } from "./styles";
 import FilterTodoList from "../../views/FilterTodoList";
+import { Picker } from "@react-native-picker/picker";
 
 export default function Home({ navigation }: { navigation: any }) {
   const { todoList, sectorList, initialize, findSectorById } = useTodoList();
@@ -22,14 +23,18 @@ export default function Home({ navigation }: { navigation: any }) {
     setTodoListFiltered(JSON.parse(JSON.stringify(todoList)) as Todo[]);
   }, [todoList]);
 
-  const filterTodoListByName = (text: string) => {
-    let todoListCopy = JSON.parse(JSON.stringify(todoList)) as Todo[];
+  const filterTodoListByName = (todoListToFilter: Todo[], text: string) => {
+    //let todoListCopy = JSON.parse(JSON.stringify(todoListFiltered)) as Todo[];
+
+    setSearchBarText(text);
 
     if (text === "") {
-      setTodoListFiltered(todoListCopy);
-      return;
+      //setTodoListFiltered(todoListCopy);
+      return todoListToFilter;
     }
-    setTodoListFiltered(todoListCopy.filter((todo) => todo.name.toLowerCase().includes(text.toLowerCase())));
+
+    //setTodoListFiltered(todoListCopy.filter((todo) => todo.name.toLowerCase().includes(text.toLowerCase())));
+    return todoListToFilter.filter((todo) => todo.name.toLowerCase().includes(text.toLowerCase()));
   };
 
   const [sectorSelectionList, setSectorSelectionList] = useState([] as (Sector & { selected: boolean })[]);
@@ -60,15 +65,15 @@ export default function Home({ navigation }: { navigation: any }) {
     setPrioritySelectionList(prioritySelectionListCopy);
   };
 
-  const filterTodoListByTag = () => {
-    let todoListCopy = JSON.parse(JSON.stringify(todoList)) as Todo[];
+  const filterTodoListByTag = (todoListToFilter: Todo[]) => {
+    let todoListCopy = JSON.parse(JSON.stringify(todoListToFilter)) as Todo[];
 
     let selectedSectors = sectorSelectionList.filter((sector) => sector.selected);
     let selectedPriorities = prioritySelectionList.filter((priority) => priority.selected);
 
     if (selectedSectors.length + selectedPriorities.length === 0) {
-      setTodoListFiltered(todoListCopy);
-      return;
+      //setTodoListFiltered(todoListCopy);
+      return todoListToFilter;
     }
 
     todoListCopy = todoListCopy.filter((todo) => {
@@ -89,7 +94,25 @@ export default function Home({ navigation }: { navigation: any }) {
       return sectorCheck || priorityCheck;
     });
 
-    console.log(todoListCopy);
+    return todoListCopy;
+    //setTodoListFiltered(todoListCopy);
+  };
+
+  const filterTodoList = (text?: string) => {
+    if (text == undefined) setTodoListFiltered(filterTodoListByTag(filterTodoListByName(todoList, searchBarText)));
+    else setTodoListFiltered(filterTodoListByTag(filterTodoListByName(todoList, text)));
+  };
+
+  const sortTodoList = (itemValue: string) => {
+    let todoListCopy = JSON.parse(JSON.stringify(todoListFiltered)) as Todo[];
+
+    setSortOption(itemValue);
+
+    todoListCopy.sort((a, b) => {
+      if (PriorityTypes.indexOf(a.priority) > PriorityTypes.indexOf(b.priority)) return -1;
+      if (PriorityTypes.indexOf(a.priority) > PriorityTypes.indexOf(b.priority)) return 1;
+      else return 0;
+    });
 
     setTodoListFiltered(todoListCopy);
   };
@@ -97,6 +120,8 @@ export default function Home({ navigation }: { navigation: any }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [isModal3Visible, setIsModal3Visible] = useState(false);
+  const [searchBarText, setSearchBarText] = useState("");
+  const [sortOption, setSortOption] = useState("Prioridade");
 
   // Override BackButton Behaviour (Closing the App on Home Page)
   useFocusEffect(
@@ -121,11 +146,19 @@ export default function Home({ navigation }: { navigation: any }) {
 
       {/* Main Section */}
       <View style={styles.textInputArea}>
-        <SearchBarStyled placeholder="Procurar" onChangeText={(text) => filterTodoListByName(text)}></SearchBarStyled>
+        <SearchBarStyled placeholder="Procurar" onChangeText={(text) => filterTodoList(text)}></SearchBarStyled>
       </View>
       <View style={styles.filterInputArea}>
         <Button onPress={() => setIsModal3Visible(true)} title="button"></Button>
-        <Button title="button"></Button>
+        <Picker
+          selectedValue={sortOption}
+          onValueChange={(itemValue, itemIndex) => sortTodoList(itemValue)}
+          style={styles.picker}
+          mode="dropdown"
+        >
+          <Picker.Item key={"0"} label={"Prioridade"} value={"Prioridade"} color="#000" />
+          <Picker.Item key={"1"} label={"Data Limite"} value={"Data Limite"} color="#000" />
+        </Picker>
       </View>
       <View style={styles.listArea}>
         <FlatList
@@ -135,7 +168,9 @@ export default function Home({ navigation }: { navigation: any }) {
               <Text>
                 {item.name} setor: {findSectorById(item.sectorId)?.name}
               </Text>
-              <Text>{item.dueDate}</Text>
+              <Text>
+                {item.dueDate} prioridade: {item.priority}
+              </Text>
             </View>
           )}
         />
@@ -208,7 +243,10 @@ export default function Home({ navigation }: { navigation: any }) {
           handleSectorSelection={handleSectorSelection}
           prioritySelectionList={prioritySelectionList}
           handlePrioritySelection={handlePrioritySelection}
-          handleSubmit={filterTodoListByTag}
+          handleSubmit={() => {
+            filterTodoList();
+            setIsModal3Visible(false);
+          }}
         ></FilterTodoList>
       </ReactNativeModal>
 
@@ -270,5 +308,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
+  },
+  picker: {
+    backgroundColor: "#DDD",
+    width: 170,
   },
 });

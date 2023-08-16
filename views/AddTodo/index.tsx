@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
+import { DateTimePickerAndroid, AndroidNativeProps } from "@react-native-community/datetimepicker";
 
 import useTodoList from "../../data/TodoListContext";
 import { Todo, PriorityTypes, StatusTypes } from "../../types/todo";
@@ -10,6 +11,8 @@ type AddTodoProps = { handleCloseButton: () => void };
 
 export default function AddTodo(props: AddTodoProps) {
   const { sectorList, addTodo } = useTodoList();
+
+  const [date, setDate] = useState(new Date());
 
   const {
     control,
@@ -73,9 +76,20 @@ export default function AddTodo(props: AddTodoProps) {
           <View>
             <Controller
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field }) => (
                 <TextInput
-                  onChangeText={onChange}
+                  value={date.toDateString()}
+                  onPressIn={() =>
+                    DateTimePickerAndroid.open({
+                      value: date,
+                      onChange: (event, newDate) => {
+                        if (newDate) {
+                          setDate(newDate);
+                          field.onChange(newDate);
+                        }
+                      },
+                    } as AndroidNativeProps)
+                  }
                   placeholder="Due Date"
                   style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
                 />

@@ -51,7 +51,12 @@ export default function FilterTodoList(props: FilterTodoListProps) {
           ))}
         </View>
       </ScrollView>
-      <Button onPress={props.handleSubmit} title="button"></Button>
+      <Button
+        onPress={() => {
+          props.handleSubmit();
+        }}
+        title="button"
+      ></Button>
     </View>
   );
 }
