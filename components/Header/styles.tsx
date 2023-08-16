@@ -14,15 +14,15 @@ export const Root = styled.View<Props>`
   align-items: center;
   padding: 0 24px;
   height: 56px;
-  background-color: ${(props) => props.theme.colors.primary.main};
+  background-color: ${(props: any) => props.theme.colors.primary.main};
 `;
 
 export const Text = styled.Text<Props>`
   font-size: 16px;
-  color: ${(props) => props.theme.colors.common.white};
+  color: ${(props: any) => props.theme.colors.common.white};
 `;
 
 export const Icon = styled(Ionicons)<Props>`
-  color: ${(props) => props.theme.colors.common.white};
+  color: ${(props: any) => props.theme.colors.common.white};
   font-size: 28px;
 `;

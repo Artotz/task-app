@@ -19,11 +19,11 @@ export const Header = styled.View`
   padding: 24px;
   padding-bottom: 0;
 
-  color: ${(props) => props.theme.colors.common.white};
+  color: ${(props: any) => props.theme.colors.common.white};
 `;
 
 export const CloseIcon = styled(Ionicons)`
-  color: ${(props) => props.theme.colors.common["gray-300"]};
+  color: ${(props: any) => props.theme.colors.common["gray-300"]};
   font-size: 24px;
 `;
 
@@ -35,13 +35,13 @@ export const HeaderViewText = styled.View`
 `;
 
 export const HeaderIcon = styled(Ionicons)`
-  color: ${(props) => props.theme.colors.primary.dark};
+  color: ${(props: any) => props.theme.colors.primary.dark};
   font-size: 24px;
   font-weight: 800;
 `;
 
 export const HeaderText = styled.Text`
-  color: ${(props) => props.theme.colors.primary.dark};
+  color: ${(props: any) => props.theme.colors.primary.dark};
   font-size: 20px;
   font-weight: 800;
 `;
@@ -60,11 +60,11 @@ export const InputView = styled.View`
 `;
 
 export const InputLabel = styled.Text`
-  color: ${(props) => props.theme.colors.common["gray-400"]};
+  color: ${(props: any) => props.theme.colors.common["gray-400"]};
 `;
 
 export const ErrorMessage = styled.Text`
-  color: ${(props) => props.theme.colors.alert.danger};
+  color: ${(props: any) => props.theme.colors.alert.danger};
 `;
 
 export const ButtonView = styled.View`

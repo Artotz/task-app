@@ -16,14 +16,14 @@ export const Root = styled.TouchableOpacity<Props>`
   border-radius: 8px;
 
   /* Solid */
-  ${(props) =>
+  ${(props: any) =>
     props.variant === "solid" &&
     `
   background-color: ${props.theme.colors.primary.mid};
   `}
 
   /* Outline */
-  ${(props) =>
+  ${(props: any) =>
     props.variant === "outline" &&
     `
   border: 1px solid ${props.theme.colors.primary.mid};
@@ -33,9 +33,9 @@ export const Root = styled.TouchableOpacity<Props>`
 export const Text = styled.Text<Props>`
   font-size: 14px;
   font-weight: 700;
-  color: ${(props) => props.theme.colors.common.white};
+  color: ${(props: any) => props.theme.colors.common.white};
 
-  ${(props) =>
+  ${(props: any) =>
     props.variant === "outline" &&
     `
     color: ${props.theme.colors.primary.mid};
@@ -43,10 +43,10 @@ export const Text = styled.Text<Props>`
 `;
 
 export const Icon = styled(Ionicons)<Props>`
-  color: ${(props) => props.theme.colors.common.white};
+  color: ${(props: any) => props.theme.colors.common.white};
   font-size: 16px;
 
-  ${(props) =>
+  ${(props: any) =>
     props.variant === "outline" &&
     `
     color: ${props.theme.colors.primary.mid};

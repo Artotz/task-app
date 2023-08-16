@@ -17,16 +17,16 @@ export const View = styled.View<Props>`
   padding: 8px 16px;
   height: 48px;
   border-color: black;
-  background-color: ${(props) => props.theme.colors.common["gray-100"]};
+  background-color: ${(props: any) => props.theme.colors.common["gray-100"]};
 
   border-radius: 9999px;
 `;
 
 export const TextInput = styled.TextInput<Props>`
-  color: ${(props) => props.theme.colors.common["gray-400"]};
+  color: ${(props: any) => props.theme.colors.common["gray-400"]};
 `;
 
 export const Icon = styled(Ionicons)<Props>`
-  color: ${(props) => props.theme.colors.common["gray-400"]};
+  color: ${(props: any) => props.theme.colors.common["gray-400"]};
   font-size: 24px;
 `;
