@@ -9,11 +9,10 @@ type ButtonProps = {
   icon?: keyof typeof Ionicons.glyphMap;
 } & TouchableOpacityProps;
 
-const Button: FC<ButtonProps> = ({ children, icon, variant = "solid", ...rest }) => {
+const Button: FC<ButtonProps> = ({ icon, variant = "solid", ...rest }) => {
   return (
     <S.Root {...rest} variant={variant}>
       {icon && <S.Icon name={icon} variant={variant} />}
-      {children && <S.Text variant={variant}>{children}</S.Text>}
     </S.Root>
   );
 };

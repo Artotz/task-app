@@ -13,16 +13,14 @@ export const Root = styled.TouchableOpacity<Props>`
   align-items: center;
   gap: 8px;
   padding: 16px;
-  border-radius: 8px;
+  border-radius: 9999px;
 
-  /* Solid */
   ${(props) =>
     props.variant === "solid" &&
     `
   background-color: ${props.theme.colors.primary.mid};
   `}
 
-  /* Outline */
   ${(props) =>
     props.variant === "outline" &&
     `
@@ -30,21 +28,14 @@ export const Root = styled.TouchableOpacity<Props>`
   `}
 `;
 
-export const Text = styled.Text<Props>`
-  font-size: 14px;
-  font-weight: 700;
-  color: ${(props) => props.theme.colors.common.white};
+export const Icon = styled(Ionicons)<Props>`
+  font-size: 32px;
 
   ${(props) =>
-    props.variant === "outline" &&
+    props.variant === "solid" &&
     `
-    color: ${props.theme.colors.primary.mid};
+    color: ${props.theme.colors.common.white};
   `}
-`;
-
-export const Icon = styled(Ionicons)<Props>`
-  color: ${(props) => props.theme.colors.common.white};
-  font-size: 16px;
 
   ${(props) =>
     props.variant === "outline" &&

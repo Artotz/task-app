@@ -1,10 +1,12 @@
 import { FC } from "react";
-import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import { GestureResponderEvent, TouchableOpacity, ViewProps } from "react-native";
 
-type CardProps = {
-  title: string;
-} & TouchableOpacityProps;
+import * as S from "./styles";
 
-export const Card: FC<CardProps> = ({ children }) => {
-  return <TouchableOpacity>{children}</TouchableOpacity>;
+type CardProps = {} & ViewProps;
+
+const Card: FC<CardProps> = ({ children, ...rest }) => {
+  return <S.Root {...rest}>{children}</S.Root>;
 };
+
+export default Card;
