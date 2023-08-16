@@ -7,14 +7,15 @@ import useTodoList from "../../data/TodoListContext";
 import AddTodo from "../../views/AddTodo";
 import { Priority, PriorityTypes, Sector, Todo } from "../../types/todo";
 
-import ButtonX from "../../components/Button";
-
-import { ButtonStyled, SearchBarStyled } from "./styles";
+import IconButton from "../../components/IconButton";
 import FilterTodoList from "../../views/FilterTodoList";
+import Header from "../../components/Header";
+import Searchbar from "../../components/Searchbar";
 
 export default function Home({ navigation }: { navigation: any }) {
   const { todoList, sectorList, initialize, findSectorById } = useTodoList();
 
+  // SideEffetcs
   useEffect(() => {
     initialize();
   }, []);
@@ -24,6 +25,7 @@ export default function Home({ navigation }: { navigation: any }) {
     setTodoListFiltered(JSON.parse(JSON.stringify(todoList)) as Todo[]);
   }, [todoList]);
 
+  // Filter Functions
   const filterTodoListByName = (text: string) => {
     let todoListCopy = JSON.parse(JSON.stringify(todoList)) as Todo[];
 
@@ -34,6 +36,7 @@ export default function Home({ navigation }: { navigation: any }) {
     setTodoListFiltered(todoListCopy.filter((todo) => todo.name.toLowerCase().includes(text.toLowerCase())));
   };
 
+  // Form Logic
   const [sectorSelectionList, setSectorSelectionList] = useState([] as (Sector & { selected: boolean })[]);
   useEffect(() => {
     let sectorSelectionListTemp = sectorList.map((sector) => {
@@ -96,6 +99,7 @@ export default function Home({ navigation }: { navigation: any }) {
     setTodoListFiltered(todoListCopy);
   };
 
+  // Modal Logic
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [isModal3Visible, setIsModal3Visible] = useState(false);
@@ -115,20 +119,22 @@ export default function Home({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container}>
-      {/* Header Component */}
-      <View style={styles.header}>
-        <Text style={{ color: "white" }}>Cabeça</Text>
-        <Button onPress={() => setIsModal2Visible(true)} title="button"></Button>
-      </View>
+      <Header title="Meu Quadro" hamburgerFunction={() => setIsModal2Visible(true)} />
 
       {/* Main Section */}
+
+      {/* Searchbar Component */}
       <View style={styles.textInputArea}>
-        <SearchBarStyled placeholder="Procurar" onChangeText={(text) => filterTodoListByName(text)}></SearchBarStyled>
+        <Searchbar placeholder="Procurar" onChangeText={(text) => filterTodoListByName(text)} />
       </View>
+
+      {/* Filters */}
       <View style={styles.filterInputArea}>
         <Button onPress={() => setIsModal3Visible(true)} title="button"></Button>
         <Button title="button"></Button>
       </View>
+
+      {/* Items List */}
       <View style={styles.listArea}>
         <FlatList
           data={todoListFiltered}
@@ -142,8 +148,10 @@ export default function Home({ navigation }: { navigation: any }) {
           )}
         />
       </View>
+
+      {/* Floating Add Button */}
       <View style={styles.addButton}>
-        <ButtonX onPress={() => setIsModalVisible(true)}> Meme </ButtonX>
+        <IconButton icon="add-sharp" onPressIn={() => setIsModalVisible(true)} />
       </View>
 
       {/* AddTodo Modal */}
