@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import { DateTimePickerAndroid, AndroidNativeProps } from "@react-native-community/datetimepicker";
 
 import useTodoList from "../../data/TodoListContext";
 import { Todo, PriorityTypes, StatusTypes } from "../../types/todo";
+import * as S from "./styles";
+
+import InputText from "../../components/InputText";
+import Button from "../../components/Button";
 
 type AddTodoProps = { handleCloseButton: () => void };
 
@@ -27,49 +30,52 @@ export default function AddTodo(props: AddTodoProps) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text>Adicionar Tarefa</Text>
-        <Button onPress={props.handleCloseButton} title="button"></Button>
-      </View>
+    <S.Root style={styles.container}>
+      <S.Header>
+        <S.HeaderViewText>
+          <S.HeaderIcon name="checkbox" />
+          <S.HeaderText>Adicionar Tarefa</S.HeaderText>
+        </S.HeaderViewText>
+        <TouchableOpacity>
+          <S.CloseIcon name="close-circle" onPress={props.handleCloseButton} />
+        </TouchableOpacity>
+      </S.Header>
 
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingVertical: 50,
-          paddingHorizontal: 20,
-        }}
-      >
+      <S.FormSection>
         {/* Name */}
-        <Controller
-          control={control}
-          render={({ field: { onChange } }) => (
-            <TextInput
-              onChangeText={onChange}
-              placeholder="Name"
-              style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
-            />
-          )}
-          name="name"
-          rules={{ required: "Name is required" }}
-        />
-        {errors.name && <Text>{errors.name.message}</Text>}
+        <S.InputView>
+          <S.InputLabel>Nome</S.InputLabel>
+          <Controller
+            control={control}
+            render={({ field: { onChange } }) => (
+              <InputText
+                onChangeText={onChange}
+                placeholder="Name"
+                style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
+              />
+            )}
+            name="name"
+            rules={{ required: "Nome é obrigatório" }}
+          />
+          {errors.name && <S.ErrorMessage>{errors.name.message}</S.ErrorMessage>}
+        </S.InputView>
 
         {/* Description */}
-        <Controller
-          control={control}
-          render={({ field: { onChange } }) => (
-            <TextInput
-              onChangeText={onChange}
-              placeholder="Description"
-              style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
-            />
-          )}
-          name="description"
-        />
-        {errors.description && <Text>{errors.description.message}</Text>}
+        <S.InputView>
+          <S.InputLabel>Descrição (opcional)</S.InputLabel>
+          <Controller
+            control={control}
+            render={({ field: { onChange } }) => (
+              <InputText
+                onChangeText={onChange}
+                placeholder="Description"
+                style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
+              />
+            )}
+            name="description"
+          />
+          {errors.description && <S.ErrorMessage>{errors.description.message}</S.ErrorMessage>}
+        </S.InputView>
 
         {/* DueDate and Sector */}
         <View style={styles.containerFlowRow}>
@@ -100,29 +106,24 @@ export default function AddTodo(props: AddTodoProps) {
             {errors.dueDate && <Text>{errors.dueDate.message}</Text>}
           </View>
 
-          <View>
-            <Controller
-              control={control}
-              render={({ field }) => (
-                <Picker
-                  selectedValue={field.value}
-                  onValueChange={field.onChange}
-                  style={styles.picker}
-                  mode="dropdown"
-                >
-                  {/* Initial option with undefined value */}
-                  <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
+        {/* Sector */}
+        <View>
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <Picker selectedValue={field.value} onValueChange={field.onChange} style={styles.picker} mode="dropdown">
+                {/* Initial option with undefined value */}
+                <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
 
-                  {sectorList.map((sector) => (
-                    <Picker.Item key={sector.id} label={sector.name} value={sector.id} color="#000" />
-                  ))}
-                </Picker>
-              )}
-              name="sectorId"
-              rules={{ required: "Sector is required" }}
-            />
-            {errors.sectorId && <Text>{errors.sectorId.message}</Text>}
-          </View>
+                {sectorList.map((sector) => (
+                  <Picker.Item key={sector.id} label={sector.name} value={sector.id} color="#000" />
+                ))}
+              </Picker>
+            )}
+            name="sectorId"
+            rules={{ required: "Sector is required" }}
+          />
+          {errors.sectorId && <S.ErrorMessage>{errors.sectorId.message}</S.ErrorMessage>}
         </View>
 
         {/* Priority and Status */}
@@ -148,7 +149,7 @@ export default function AddTodo(props: AddTodoProps) {
               name="priority"
               rules={{ required: "Priority is required" }}
             />
-            {errors.priority && <Text>{errors.priority.message}</Text>}
+            {errors.priority && <S.ErrorMessage>{errors.priority.message}</S.ErrorMessage>}
           </View>
 
           <View>
@@ -172,13 +173,18 @@ export default function AddTodo(props: AddTodoProps) {
               name="status"
               rules={{ required: "Status is required" }}
             />
-            {errors.status && <Text>{errors.status.message}</Text>}
+            {errors.status && <S.ErrorMessage>{errors.status.message}</S.ErrorMessage>}
           </View>
         </View>
 
-        <Button title="Submit" onPress={handleSubmit(onSubmit)} />
-      </View>
-    </View>
+        <S.ButtonView>
+          <Button variant="outline" onPress={props.handleCloseButton}>
+            Cancelar
+          </Button>
+          <Button onPress={() => handleSubmit(onSubmit)}>Salvar</Button>
+        </S.ButtonView>
+      </S.FormSection>
+    </S.Root>
   );
 }
 

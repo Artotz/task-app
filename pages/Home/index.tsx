@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { BackHandler, Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { BackHandler, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -7,13 +7,18 @@ import useTodoList from "../../data/TodoListContext";
 import AddTodo from "../../views/AddTodo";
 import { Priority, PriorityTypes, Sector, Todo } from "../../types/todo";
 
-import { ButtonStyled, SearchBarStyled } from "./styles";
+import IconButton from "../../components/IconButton";
 import FilterTodoList from "../../views/FilterTodoList";
 import { Picker } from "@react-native-picker/picker";
+import Header from "../../components/Header";
+import Searchbar from "../../components/Searchbar";
+import Button from "../../components/Button";
+import Card from "../../components/Card";
 
 export default function Home({ navigation }: { navigation: any }) {
   const { todoList, sectorList, initialize, findSectorById } = useTodoList();
 
+  // SideEffetcs
   useEffect(() => {
     initialize();
   }, []);
@@ -37,6 +42,7 @@ export default function Home({ navigation }: { navigation: any }) {
     return todoListToFilter.filter((todo) => todo.name.toLowerCase().includes(text.toLowerCase()));
   };
 
+  // Form Logic
   const [sectorSelectionList, setSectorSelectionList] = useState([] as (Sector & { selected: boolean })[]);
   useEffect(() => {
     let sectorSelectionListTemp = sectorList.map((sector) => {
@@ -117,6 +123,7 @@ export default function Home({ navigation }: { navigation: any }) {
     setTodoListFiltered(todoListCopy);
   };
 
+  // Modal Logic
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [isModal3Visible, setIsModal3Visible] = useState(false);
@@ -138,16 +145,16 @@ export default function Home({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container}>
-      {/* Header Component */}
-      <View style={styles.header}>
-        <Text style={{ color: "white" }}>Cabeça</Text>
-        <Button onPress={() => setIsModal2Visible(true)} title="button"></Button>
-      </View>
+      <Header title="Meu Quadro" hamburgerFunction={() => setIsModal2Visible(true)} />
 
       {/* Main Section */}
+
+      {/* Searchbar Component */}
       <View style={styles.textInputArea}>
         <SearchBarStyled placeholder="Procurar" onChangeText={(text) => filterTodoList(text)}></SearchBarStyled>
       </View>
+
+      {/* Filters */}
       <View style={styles.filterInputArea}>
         <Button onPress={() => setIsModal3Visible(true)} title="button"></Button>
         <Picker
@@ -160,13 +167,15 @@ export default function Home({ navigation }: { navigation: any }) {
           <Picker.Item key={"1"} label={"Data Limite"} value={"Data Limite"} color="#000" />
         </Picker>
       </View>
+
+      {/* Items List */}
       <View style={styles.listArea}>
         <FlatList
           data={todoListFiltered}
           renderItem={({ item }) => (
-            <View style={styles.listItem}>
+            <Card color={findSectorById(item.sectorId)?.color || "#FAF"}>
               <Text>
-                {item.name} setor: {findSectorById(item.sectorId)?.name}
+                {item.name} setor: {findSectorById(item.sectorId)?.name} {findSectorById(item.sectorId)?.color}
               </Text>
               <Text>
                 {item.dueDate} prioridade: {item.priority}
@@ -175,8 +184,10 @@ export default function Home({ navigation }: { navigation: any }) {
           )}
         />
       </View>
+
+      {/* Floating Add Button */}
       <View style={styles.addButton}>
-        <Button onPress={() => setIsModalVisible(true)} title="button"></Button>
+        <IconButton icon="add-sharp" onPressIn={() => setIsModalVisible(true)} />
       </View>
 
       {/* AddTodo Modal */}
@@ -203,27 +214,26 @@ export default function Home({ navigation }: { navigation: any }) {
         onBackdropPress={() => setIsModal2Visible(false)}
       >
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Text>Task App</Text>
-            <Button onPress={() => setIsModal2Visible(false)} title="button"></Button>
-          </View>
+          <Header title="Task App" closeFunction={() => setIsModal2Visible(false)} />
           <View style={{ padding: 10 }}>
             <Button
-              title="button"
               onPress={() => {
                 setIsModal2Visible(false);
                 navigation.navigate("Home");
               }}
-            ></Button>
+            >
+              Tarefas
+            </Button>
           </View>
           <View style={{ padding: 10 }}>
             <Button
-              title="button"
               onPress={() => {
                 setIsModal2Visible(false);
                 navigation.navigate("SectorPage");
               }}
-            ></Button>
+            >
+              Setores
+            </Button>
           </View>
         </View>
       </ReactNativeModal>

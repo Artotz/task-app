@@ -1,7 +1,7 @@
 import { styled } from "styled-components/native";
 
 export const ButtonStyled = styled.Text`
-  background-color: ${(props) => props.theme.primary.main};
+  background-color: ${(props: any) => props.theme.primary.main};
   color: white;
 `;
 
