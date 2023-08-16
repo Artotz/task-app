@@ -62,6 +62,7 @@ export default function AddTodo(props: AddTodoProps) {
           />
           {errors.name && <S.ErrorMessage>{errors.name.message}</S.ErrorMessage>}
         </S.InputView>
+
         {/* Description */}
         <S.InputView>
           <S.InputLabel>Descrição (opcional)</S.InputLabel>

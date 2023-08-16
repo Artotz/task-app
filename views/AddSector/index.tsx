@@ -15,7 +15,14 @@ import * as S from "./styles";
 export default function AddSector(props: AddSectorProps) {
   const { addSector } = useTodoList();
 
-  const colorList = ["red", "green", "blue"];
+  const colorList = [
+    { value: "red", name: "Vermelho" },
+    { value: "green", name: "Verde" },
+    { value: "blue", name: "Azul" },
+    { value: "yellow", name: "Amarelo" },
+    { value: "cyan", name: "Ciano" },
+    { value: "magenta", name: "Magenta" },
+  ];
 
   const {
     control,
@@ -65,7 +72,13 @@ export default function AddSector(props: AddSectorProps) {
                 <Picker.Item label={"Selecione uma cor"} enabled={false} color="#777" />
 
                 {colorList.map((color, index) => (
-                  <Picker.Item key={index} label={color} value={color} color="#000" />
+                  <Picker.Item
+                    key={index}
+                    label={color.name}
+                    value={color.value}
+                    //style={{ backgroundColor: color }}
+                    color={color.value}
+                  />
                 ))}
               </Picker>
             )}
@@ -150,7 +163,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   picker: {
+    flex: 0,
     backgroundColor: "#DDD",
-    width: 170,
   },
 });

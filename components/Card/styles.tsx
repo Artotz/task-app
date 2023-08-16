@@ -23,7 +23,10 @@ export const ChildrenContainer = styled.View<Props>`
   display: flex;
   border-radius: 8px;
 
-  padding: 8px 16px;
+  padding: 8px 8px 16px 16px;
+
+  justify-content: space-between;
+  gap: 30px;
 
   background-color: ${(props) => props.theme.colors.common.white};
 `;

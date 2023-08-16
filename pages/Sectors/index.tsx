@@ -14,6 +14,7 @@ import Button from "../../components/Button";
 import Card from "../../components/Card";
 
 import * as S from "./styles";
+import { theme } from "../../styles/theme";
 
 export default function SectorPage({ navigation }: { navigation: any }) {
   const { sectorList, deleteSector } = useTodoList();
@@ -28,37 +29,54 @@ export default function SectorPage({ navigation }: { navigation: any }) {
 
       {/* Main Section */}
 
-      <S.FormSection style={styles.listArea}>
+      <S.FormSection>
         <S.HeadingView>
           <S.Heading>Setores</S.Heading>
           <Text>Gerencie, visualize, exclua ou adicione setores para suas tarefas</Text>
         </S.HeadingView>
+      </S.FormSection>
+      <View style={styles.listArea}>
         <FlatList
           data={sectorList}
           renderItem={({ item }) => (
-            <Card>
+            <Card
+              style={{
+                elevation: 3,
+                shadowColor: "#777",
+              }}
+              color={item.color}
+            >
               <S.CardView>
                 <Text>{item.name}</Text>
                 <TouchableOpacity onPress={() => deleteSector(item.id)}>
-                  <Ionicons name="close-circle" />
+                  <Ionicons size={20} name="close-circle" color={theme.colors.alert.danger} />
                 </TouchableOpacity>
               </S.CardView>
             </Card>
           )}
         />
-      </S.FormSection>
-      <View>
-        <Button onPress={() => setIsModalVisible(true)}>Add</Button>
       </View>
 
-      {/* AddTodo Modal */}
+      <View style={styles.addButton}>
+        <IconButton
+          style={{
+            elevation: 5,
+            shadowColor: "#000",
+          }}
+          icon="add-sharp"
+          onPressIn={() => setIsModalVisible(true)}
+        />
+      </View>
+
+      {/* AddSector Modal */}
       <ReactNativeModal
-        style={{ marginHorizontal: 0, marginBottom: 0, marginTop: 180 }}
+        style={{ marginHorizontal: 0, marginBottom: 0, marginTop: 400 }}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         backdropTransitionOutTiming={0}
         isVisible={isModalVisible}
         onBackButtonPress={() => setIsModalVisible(false)}
+        onBackdropPress={() => setIsModal2Visible(false)}
       >
         <AddSector handleCloseButton={() => setIsModalVisible(false)} />
       </ReactNativeModal>
@@ -71,12 +89,10 @@ export default function SectorPage({ navigation }: { navigation: any }) {
         backdropTransitionOutTiming={0}
         isVisible={isModal2Visible}
         onBackButtonPress={() => setIsModal2Visible(false)}
+        onBackdropPress={() => setIsModal2Visible(false)}
       >
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Text>Task App</Text>
-            <Button onPress={() => setIsModal2Visible(false)}>Tarefas</Button>
-          </View>
+          <Header title="Task App" closeFunction={() => setIsModal2Visible(false)} />
           <View style={{ padding: 10 }}>
             <Button
               onPress={() => {
