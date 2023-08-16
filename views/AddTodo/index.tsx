@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
@@ -9,6 +10,7 @@ import * as S from "./styles";
 
 import InputText from "../../components/InputText";
 import Button from "../../components/Button";
+import { TextInput } from "../../components/InputText/styles";
 
 type AddTodoProps = { handleCloseButton: () => void };
 
@@ -22,6 +24,7 @@ export default function AddTodo(props: AddTodoProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<Omit<Todo, "id">>();
+
   const onSubmit = (data: Omit<Todo, "id">) => handleAddTodo(data);
 
   const handleAddTodo = (todo: Omit<Todo, "id">) => {
@@ -59,7 +62,6 @@ export default function AddTodo(props: AddTodoProps) {
           />
           {errors.name && <S.ErrorMessage>{errors.name.message}</S.ErrorMessage>}
         </S.InputView>
-
         {/* Description */}
         <S.InputView>
           <S.InputLabel>Descrição (opcional)</S.InputLabel>
@@ -103,9 +105,9 @@ export default function AddTodo(props: AddTodoProps) {
               name="dueDate"
               rules={{ required: "Due Date is required" }}
             />
-            {errors.dueDate && <Text>{errors.dueDate.message}</Text>}
+            {errors.dueDate && <S.ErrorMessage>{errors.dueDate.message}</S.ErrorMessage>}
           </View>
-
+        </View>
         {/* Sector */}
         <View>
           <Controller
@@ -181,7 +183,7 @@ export default function AddTodo(props: AddTodoProps) {
           <Button variant="outline" onPress={props.handleCloseButton}>
             Cancelar
           </Button>
-          <Button onPress={() => handleSubmit(onSubmit)}>Salvar</Button>
+          <Button onPress={handleSubmit(onSubmit)}>Salvar</Button>
         </S.ButtonView>
       </S.FormSection>
     </S.Root>
@@ -252,6 +254,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   picker: {
+    border: 1,
     backgroundColor: "#DDD",
     width: 170,
   },

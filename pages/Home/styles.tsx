@@ -1,18 +1,16 @@
 import { styled } from "styled-components/native";
 
-export const ButtonStyled = styled.Text`
-  background-color: ${(props: any) => props.theme.primary.main};
-  color: white;
+export const Root = styled.View`
+  display: flex;
+  width: 100%;
+
+  gap: 24px;
 `;
 
-export const SearchBarStyled = styled.TextInput`
+export const FilterView = styled.View`
   display: flex;
-  width: 80%;
 
-  padding: 10px 15px;
-  border: 1px;
-  border-color: black;
-  background-color: #f1f1f1;
+  width: 100%;
 
-  border-radius: 30px;
+  gap: 24px;
 `;

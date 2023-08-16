@@ -15,6 +15,8 @@ import Searchbar from "../../components/Searchbar";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 
+import * as S from "./styles";
+
 export default function Home({ navigation }: { navigation: any }) {
   const { todoList, sectorList, initialize, findSectorById } = useTodoList();
 
@@ -112,11 +114,11 @@ export default function Home({ navigation }: { navigation: any }) {
   const sortTodoList = (itemValue: string) => {
     let todoListCopy = JSON.parse(JSON.stringify(todoListFiltered)) as Todo[];
 
-    setSortOption(itemValue);
+    let sortOrder = -1;
 
     todoListCopy.sort((a, b) => {
-      if (PriorityTypes.indexOf(a.priority) > PriorityTypes.indexOf(b.priority)) return -1;
-      if (PriorityTypes.indexOf(a.priority) > PriorityTypes.indexOf(b.priority)) return 1;
+      if (PriorityTypes.indexOf(a.priority) > PriorityTypes.indexOf(b.priority)) return sortOrder;
+      if (PriorityTypes.indexOf(a.priority) < PriorityTypes.indexOf(b.priority)) return -sortOrder;
       else return 0;
     });
 
@@ -144,19 +146,18 @@ export default function Home({ navigation }: { navigation: any }) {
   );
 
   return (
-    <View style={styles.container}>
+    <S.Root style={styles.container}>
       <Header title="Meu Quadro" hamburgerFunction={() => setIsModal2Visible(true)} />
 
       {/* Main Section */}
 
       {/* Searchbar Component */}
-      <View style={styles.textInputArea}>
-        <SearchBarStyled placeholder="Procurar" onChangeText={(text) => filterTodoList(text)}></SearchBarStyled>
-      </View>
+
+      <Searchbar placeholder="Procurar" onChangeText={(text) => filterTodoList(text)} />
 
       {/* Filters */}
       <View style={styles.filterInputArea}>
-        <Button onPress={() => setIsModal3Visible(true)} title="button"></Button>
+        <Button onPress={() => setIsModal3Visible(true)}>Filtrar</Button>
         <Picker
           selectedValue={sortOption}
           onValueChange={(itemValue, itemIndex) => sortTodoList(itemValue)}
@@ -173,14 +174,14 @@ export default function Home({ navigation }: { navigation: any }) {
         <FlatList
           data={todoListFiltered}
           renderItem={({ item }) => (
-            <Card color={findSectorById(item.sectorId)?.color || "#FAF"}>
+            <Card color={findSectorById(item.sectorId)?.color || "#333"}>
               <Text>
                 {item.name} setor: {findSectorById(item.sectorId)?.name} {findSectorById(item.sectorId)?.color}
               </Text>
               <Text>
-                {item.dueDate} prioridade: {item.priority}
+                {new Date(item.dueDate).toLocaleString()} prioridade: {item.priority}
               </Text>
-            </View>
+            </Card>
           )}
         />
       </View>
@@ -261,7 +262,7 @@ export default function Home({ navigation }: { navigation: any }) {
       </ReactNativeModal>
 
       <StatusBar />
-    </View>
+    </S.Root>
   );
 }
 

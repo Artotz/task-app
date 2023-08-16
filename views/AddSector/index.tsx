@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { TouchableOpacity, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 
@@ -7,6 +7,10 @@ import useTodoList from "../../data/TodoListContext";
 import { Sector } from "../../types/todo";
 
 type AddSectorProps = { handleCloseButton: () => void };
+
+import InputText from "../../components/InputText";
+import Button from "../../components/Button";
+import * as S from "./styles";
 
 export default function AddSector(props: AddSectorProps) {
   const { addSector } = useTodoList();
@@ -26,57 +30,59 @@ export default function AddSector(props: AddSectorProps) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text>Adicionar Setor</Text>
-        <Button onPress={props.handleCloseButton} title="button"></Button>
-      </View>
+    <S.Root style={styles.container}>
+      <S.Header>
+        <S.HeaderViewText>
+          <S.HeaderIcon name="pricetag" />
+          <S.HeaderText>Adicionar Setor</S.HeaderText>
+        </S.HeaderViewText>
+        <TouchableOpacity>
+          <S.CloseIcon name="close-circle" onPress={props.handleCloseButton} />
+        </TouchableOpacity>
+      </S.Header>
 
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingVertical: 50,
-          paddingHorizontal: 20,
-        }}
-      >
+      <S.FormSection>
         {/* Name */}
-        <Controller
-          control={control}
-          render={({ field: { onChange } }) => (
-            <TextInput
-              onChangeText={onChange}
-              placeholder="Name"
-              style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
-            />
-          )}
-          name="name"
-          rules={{ required: "Name is required" }}
-        />
-        {errors.name && <Text>{errors.name.message}</Text>}
+        <S.InputView>
+          <S.InputLabel>Nome</S.InputLabel>
+          <Controller
+            control={control}
+            render={({ field: { onChange } }) => <InputText onChangeText={onChange} placeholder="Name" />}
+            name="name"
+            rules={{ required: "Nome é obrigatório" }}
+          />
+          {errors.name && <S.ErrorMessage>{errors.name.message}</S.ErrorMessage>}
+        </S.InputView>
 
-        {/* Description */}
-        <Controller
-          control={control}
-          render={({ field }) => (
-            <Picker selectedValue={field.value} onValueChange={field.onChange} style={styles.picker} mode="dropdown">
-              {/* Initial option with undefined value */}
-              <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
+        {/* Color */}
+        <S.InputView>
+          <S.InputLabel>Cor de Identificação</S.InputLabel>
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <Picker selectedValue={field.value} onValueChange={field.onChange} style={styles.picker} mode="dropdown">
+                {/* Initial option with undefined value */}
+                <Picker.Item label={"Selecione uma cor"} enabled={false} color="#777" />
 
-              {colorList.map((color, index) => (
-                <Picker.Item key={index} label={color} value={color} color="#000" />
-              ))}
-            </Picker>
-          )}
-          name="color"
-          rules={{ required: "Color is required" }}
-        />
-        {errors.color && <Text>{errors.color.message}</Text>}
+                {colorList.map((color, index) => (
+                  <Picker.Item key={index} label={color} value={color} color="#000" />
+                ))}
+              </Picker>
+            )}
+            name="color"
+            rules={{ required: "Color é obrigatória" }}
+          />
+          {errors.color && <Text>{errors.color.message}</Text>}
+        </S.InputView>
 
-        <Button title="Submit" onPress={handleSubmit(onSubmit)} />
-      </View>
-    </View>
+        <S.ButtonView>
+          <Button variant="outline" onPress={props.handleCloseButton}>
+            Cancelar
+          </Button>
+          <Button onPress={handleSubmit(onSubmit)}>Salvar</Button>
+        </S.ButtonView>
+      </S.FormSection>
+    </S.Root>
   );
 }
 

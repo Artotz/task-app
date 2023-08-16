@@ -1,9 +1,19 @@
 import { useState } from "react";
-import { Button, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, TouchableOpacity, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
-
+import Ionicons from "@expo/vector-icons/Ionicons";
 import useTodoList from "../../data/TodoListContext";
 import AddSector from "../../views/AddSector";
+
+import IconButton from "../../components/IconButton";
+import FilterTodoList from "../../views/FilterTodoList";
+import { Picker } from "@react-native-picker/picker";
+import Header from "../../components/Header";
+import Searchbar from "../../components/Searchbar";
+import Button from "../../components/Button";
+import Card from "../../components/Card";
+
+import * as S from "./styles";
 
 export default function SectorPage({ navigation }: { navigation: any }) {
   const { sectorList, deleteSector } = useTodoList();
@@ -12,30 +22,33 @@ export default function SectorPage({ navigation }: { navigation: any }) {
   const [isModal2Visible, setIsModal2Visible] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <S.Root style={styles.container}>
       {/* Header Component */}
-      <View style={styles.header}>
-        <Text>Cabeça</Text>
-        <Button onPress={() => setIsModal2Visible(true)} title="button"></Button>
-      </View>
+      <Header title="Setores" hamburgerFunction={() => setIsModal2Visible(true)} />
 
       {/* Main Section */}
-      <View style={styles.innerHeader}>
-        <Text>Setores</Text>
-      </View>
-      <View style={styles.listArea}>
+
+      <S.FormSection style={styles.listArea}>
+        <S.HeadingView>
+          <S.Heading>Setores</S.Heading>
+          <Text>Gerencie, visualize, exclua ou adicione setores para suas tarefas</Text>
+        </S.HeadingView>
         <FlatList
           data={sectorList}
           renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <Text>{item.name}</Text>
-              <Button onPress={() => deleteSector(item.id)} title="button"></Button>
-            </View>
+            <Card>
+              <S.CardView>
+                <Text>{item.name}</Text>
+                <TouchableOpacity onPress={() => deleteSector(item.id)}>
+                  <Ionicons name="close-circle" />
+                </TouchableOpacity>
+              </S.CardView>
+            </Card>
           )}
         />
-      </View>
-      <View style={styles.addButton}>
-        <Button onPress={() => setIsModalVisible(true)} title="button"></Button>
+      </S.FormSection>
+      <View>
+        <Button onPress={() => setIsModalVisible(true)}>Add</Button>
       </View>
 
       {/* AddTodo Modal */}
@@ -62,31 +75,33 @@ export default function SectorPage({ navigation }: { navigation: any }) {
         <View style={styles.container}>
           <View style={styles.header}>
             <Text>Task App</Text>
-            <Button onPress={() => setIsModal2Visible(false)} title="button"></Button>
+            <Button onPress={() => setIsModal2Visible(false)}>Tarefas</Button>
           </View>
           <View style={{ padding: 10 }}>
             <Button
-              title="button"
               onPress={() => {
                 setIsModal2Visible(false);
                 navigation.navigate("Home");
               }}
-            ></Button>
+            >
+              Tarefas
+            </Button>
           </View>
           <View style={{ padding: 10 }}>
             <Button
-              title="button"
               onPress={() => {
                 setIsModal2Visible(false);
                 navigation.navigate("SectorPage");
               }}
-            ></Button>
+            >
+              Setores
+            </Button>
           </View>
         </View>
       </ReactNativeModal>
 
       <StatusBar />
-    </View>
+    </S.Root>
   );
 }
 
