@@ -36,8 +36,10 @@ export function TodoListProvider({ children }: { children: any }) {
 
     todoListCopy.push({
       ...todo,
-      id: todoList.length == 0 ? "1" : (parseInt(todoList[todoList.length - 1].id) + 1).toString(),
+      id: Date.now().toString(36) + Math.random().toString(36).substring(2, 12).padStart(12, "0"),
     });
+
+    console.log(todoListCopy[todoListCopy.length - 1].id);
 
     setTodoList(todoListCopy);
     AsyncStorage.setItem("todoList", JSON.stringify(todoListCopy));
@@ -67,8 +69,10 @@ export function TodoListProvider({ children }: { children: any }) {
 
     sectorListCopy.push({
       ...sector,
-      id: sectorList.length == 0 ? "1" : (parseInt(sectorList[sectorList.length - 1].id) + 1).toString(),
+      id: Date.now().toString(36) + Math.random().toString(36).substring(2, 12).padStart(12, "0"),
     });
+
+    console.log(sectorListCopy[sectorListCopy.length - 1].id);
 
     setSectorList(sectorListCopy);
     AsyncStorage.setItem("sectorList", JSON.stringify(sectorListCopy));
