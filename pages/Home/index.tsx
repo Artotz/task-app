@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { BackHandler, FlatList, Button, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { BackHandler, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -11,6 +11,8 @@ import IconButton from "../../components/IconButton";
 import FilterTodoList from "../../views/FilterTodoList";
 import Header from "../../components/Header";
 import Searchbar from "../../components/Searchbar";
+import Button from "../../components/Button";
+import Card from "../../components/Card";
 
 export default function Home({ navigation }: { navigation: any }) {
   const { todoList, sectorList, initialize, findSectorById } = useTodoList();
@@ -130,8 +132,12 @@ export default function Home({ navigation }: { navigation: any }) {
 
       {/* Filters */}
       <View style={styles.filterInputArea}>
-        <Button onPress={() => setIsModal3Visible(true)} title="button"></Button>
-        <Button title="button"></Button>
+        <Button variant="outline" icon="filter" onPress={() => setIsModal3Visible(true)}>
+          Filtrar
+        </Button>
+        <Button variant="outline" icon="arrow-down">
+          Ordenar
+        </Button>
       </View>
 
       {/* Items List */}
@@ -139,12 +145,12 @@ export default function Home({ navigation }: { navigation: any }) {
         <FlatList
           data={todoListFiltered}
           renderItem={({ item }) => (
-            <View style={styles.listItem}>
+            <Card color={findSectorById(item.sectorId)?.color || "#FAF"}>
               <Text>
-                {item.name} setor: {findSectorById(item.sectorId)?.name}
+                {item.name} setor: {findSectorById(item.sectorId)?.name} {findSectorById(item.sectorId)?.color}
               </Text>
               <Text>{item.dueDate}</Text>
-            </View>
+            </Card>
           )}
         />
       </View>
@@ -178,27 +184,26 @@ export default function Home({ navigation }: { navigation: any }) {
         onBackdropPress={() => setIsModal2Visible(false)}
       >
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Text>Task App</Text>
-            <Button onPress={() => setIsModal2Visible(false)} title="button"></Button>
-          </View>
+          <Header title="Task App" closeFunction={() => setIsModal2Visible(false)} />
           <View style={{ padding: 10 }}>
             <Button
-              title="button"
               onPress={() => {
                 setIsModal2Visible(false);
                 navigation.navigate("Home");
               }}
-            ></Button>
+            >
+              Tarefas
+            </Button>
           </View>
           <View style={{ padding: 10 }}>
             <Button
-              title="button"
               onPress={() => {
                 setIsModal2Visible(false);
                 navigation.navigate("SectorPage");
               }}
-            ></Button>
+            >
+              Setores
+            </Button>
           </View>
         </View>
       </ReactNativeModal>

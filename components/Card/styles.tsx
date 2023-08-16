@@ -1,10 +1,29 @@
 import { styled } from "styled-components/native";
 
-//todo: Change to pick
-type Props = {};
+type Props = {
+  color?: string;
+};
 
 export const Root = styled.View<Props>`
   display: flex;
+  flex-direction: row;
   border-radius: 8px;
-  border-left: 4px solid orange;
+  background-color: ${(props) => props.theme.colors.common.white};
+  overflow: hidden;
+  margin: 16px;
+`;
+
+export const ColorTag = styled.View<Props>`
+  width: 8px;
+  height: 100%;
+  background-color: ${(props) => props.color};
+`;
+
+export const ChildrenContainer = styled.View<Props>`
+  display: flex;
+  border-radius: 8px;
+
+  padding: 8px 16px;
+
+  background-color: ${(props) => props.theme.colors.common.white};
 `;

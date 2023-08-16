@@ -3,10 +3,15 @@ import { GestureResponderEvent, TouchableOpacity, ViewProps } from "react-native
 
 import * as S from "./styles";
 
-type CardProps = {} & ViewProps;
+type CardProps = { color?: string } & ViewProps;
 
-const Card: FC<CardProps> = ({ children, ...rest }) => {
-  return <S.Root {...rest}>{children}</S.Root>;
+const Card: FC<CardProps> = ({ children, color = "#055BCE", ...rest }) => {
+  return (
+    <S.Root {...rest}>
+      <S.ColorTag color={color} />
+      <S.ChildrenContainer>{children}</S.ChildrenContainer>
+    </S.Root>
+  );
 };
 
 export default Card;
