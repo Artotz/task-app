@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { BackHandler, FlatList, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { BackHandler, FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
 import { useFocusEffect } from "@react-navigation/native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import useTodoList from "../../data/TodoListContext";
 import AddTodo from "../../views/AddTodo";
@@ -111,16 +112,40 @@ export default function Home({ navigation }: { navigation: any }) {
     else setTodoListFiltered(filterTodoListByTag(filterTodoListByName(todoList, text)));
   };
 
-  const sortTodoList = (itemValue: string) => {
+  const sortTodoList = (itemIndex: number) => {
     let todoListCopy = JSON.parse(JSON.stringify(todoListFiltered)) as Todo[];
+    let sortOptionsCopy = JSON.parse(JSON.stringify(sortOptions)) as {
+      priority: number;
+      dueDate: number;
+      selected: number;
+    };
 
-    let sortOrder = -1;
+    if (itemIndex === 1) {
+      if (itemIndex === sortOptionsCopy.selected) sortOptionsCopy.priority *= -1;
+      sortOptionsCopy.dueDate = 1;
+    } else if (itemIndex === 2) {
+      sortOptionsCopy.priority = 1;
+      if (itemIndex === sortOptionsCopy.selected) sortOptionsCopy.dueDate *= -1;
+    }
 
-    todoListCopy.sort((a, b) => {
-      if (PriorityTypes.indexOf(a.priority) > PriorityTypes.indexOf(b.priority)) return sortOrder;
-      if (PriorityTypes.indexOf(a.priority) < PriorityTypes.indexOf(b.priority)) return -sortOrder;
-      else return 0;
-    });
+    if (itemIndex === 1) {
+      todoListCopy.sort((a, b) => {
+        if (PriorityTypes.indexOf(a.priority) > PriorityTypes.indexOf(b.priority)) return sortOptionsCopy.priority;
+        if (PriorityTypes.indexOf(a.priority) < PriorityTypes.indexOf(b.priority)) return -sortOptionsCopy.priority;
+        else return 0;
+      });
+    } else if (itemIndex === 2) {
+      todoListCopy.sort((a, b) => {
+        if (a.dueDate > b.dueDate) return sortOptionsCopy.dueDate;
+        if (a.dueDate < b.dueDate) return -sortOptionsCopy.dueDate;
+        else return 0;
+      });
+    }
+
+    sortOptionsCopy.selected = itemIndex;
+    console.log(sortOptionsCopy);
+
+    setSortOptions(sortOptionsCopy);
 
     setTodoListFiltered(todoListCopy);
   };
@@ -130,7 +155,7 @@ export default function Home({ navigation }: { navigation: any }) {
   const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [isModal3Visible, setIsModal3Visible] = useState(false);
   const [searchBarText, setSearchBarText] = useState("");
-  const [sortOption, setSortOption] = useState("Prioridade");
+  const [sortOptions, setSortOptions] = useState({ priority: 1, dueDate: 1, selected: -1 });
 
   // Override BackButton Behaviour (Closing the App on Home Page)
   useFocusEffect(
@@ -152,20 +177,17 @@ export default function Home({ navigation }: { navigation: any }) {
       {/* Main Section */}
 
       {/* Searchbar Component */}
-
-      <Searchbar placeholder="Procurar" onChangeText={(text) => filterTodoList(text)} />
+      <View style={styles.textInputArea}>
+        <Searchbar placeholder="Procurar" onChangeText={(text) => filterTodoList(text)} />
+      </View>
 
       {/* Filters */}
       <View style={styles.filterInputArea}>
         <Button onPress={() => setIsModal3Visible(true)}>Filtrar</Button>
-        <Picker
-          selectedValue={sortOption}
-          onValueChange={(itemValue, itemIndex) => sortTodoList(itemValue)}
-          style={styles.picker}
-          mode="dropdown"
-        >
-          <Picker.Item key={"0"} label={"Prioridade"} value={"Prioridade"} color="#000" />
-          <Picker.Item key={"1"} label={"Data Limite"} value={"Data Limite"} color="#000" />
+        <Picker onValueChange={(itemValue, itemIndex) => sortTodoList(itemIndex)} style={styles.picker} mode="dropdown">
+          <Picker.Item key={"0"} label={"Ordenar..."} value={-1} color="#777" enabled={false} />
+          <Picker.Item key={"1"} label={"Prioridade ⬆⬇"} value={0} color="#000" />
+          <Picker.Item key={"2"} label={"Data Limite ⬆⬇"} value={1} color="#000" />
         </Picker>
       </View>
 
@@ -174,12 +196,24 @@ export default function Home({ navigation }: { navigation: any }) {
         <FlatList
           data={todoListFiltered}
           renderItem={({ item }) => (
-            <Card color={findSectorById(item.sectorId)?.color || "#333"}>
-              <Text>
-                {item.name} setor: {findSectorById(item.sectorId)?.name} {findSectorById(item.sectorId)?.color}
-              </Text>
-              <Text>
-                {new Date(item.dueDate).toLocaleString()} prioridade: {item.priority}
+            <Card
+              style={{
+                elevation: 3,
+                shadowColor: "#777",
+              }}
+              color={findSectorById(item.sectorId)?.color || "#333"}
+            >
+              <View style={{ flex: 0, flexDirection: "row", justifyContent: "space-between", gap: 80 }}>
+                <Text>{item.name}</Text>
+                <Text>{new Date(item.dueDate).toLocaleDateString()}</Text>
+                <TouchableOpacity onPress={() => console.log(item)}>
+                  <Ionicons size={20} name="information-circle" />
+                </TouchableOpacity>
+              </View>
+              <Text>{item.description}</Text>
+              <Text style={{ fontSize: 10 }}>
+                {findSectorById(item.sectorId) ? findSectorById(item.sectorId)?.name : "Setor não encontrado"} /{" "}
+                {item.priority} prioridade / {item.status}
               </Text>
             </Card>
           )}
@@ -188,7 +222,14 @@ export default function Home({ navigation }: { navigation: any }) {
 
       {/* Floating Add Button */}
       <View style={styles.addButton}>
-        <IconButton icon="add-sharp" onPressIn={() => setIsModalVisible(true)} />
+        <IconButton
+          style={{
+            elevation: 5,
+            shadowColor: "#000",
+          }}
+          icon="add-sharp"
+          onPressIn={() => setIsModalVisible(true)}
+        />
       </View>
 
       {/* AddTodo Modal */}
@@ -282,7 +323,6 @@ const styles = StyleSheet.create({
     maxHeight: 60,
   },
   textInputArea: {
-    height: 80,
     alignItems: "center",
     justifyContent: "center",
   },
