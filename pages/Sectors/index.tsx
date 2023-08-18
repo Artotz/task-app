@@ -15,6 +15,7 @@ import Card from "../../components/Card";
 
 import * as S from "./styles";
 import { theme } from "../../styles/theme";
+import TreeItem from "../../components/TreeItem";
 
 export default function SectorPage({ navigation }: { navigation: any }) {
   const { sectorList, deleteSector } = useTodoList();
@@ -99,26 +100,26 @@ export default function SectorPage({ navigation }: { navigation: any }) {
       >
         <View style={styles.container}>
           <Header title="Task App" closeFunction={() => setIsModal2Visible(false)} />
-          <View style={{ padding: 10 }}>
-            <Button
-              onPress={() => {
-                setIsModal2Visible(false);
-                navigation.navigate("Home");
-              }}
-            >
-              Tarefas
-            </Button>
-          </View>
-          <View style={{ padding: 10 }}>
-            <Button
-              onPress={() => {
-                setIsModal2Visible(false);
-                navigation.navigate("SectorPage");
-              }}
-            >
-              Setores
-            </Button>
-          </View>
+          <TreeItem
+            title="Tarefas"
+            icon="checkmark-circle"
+            onPress={() => {
+              setIsModal2Visible(false);
+              navigation.navigate("Home");
+            }}
+          >
+            Visualize e adicione tarefas
+          </TreeItem>
+          <TreeItem
+            title="Setores"
+            icon="list-circle"
+            onPress={() => {
+              setIsModal2Visible(false);
+              navigation.navigate("SectorPage");
+            }}
+          >
+            Visualize e cadastre setores
+          </TreeItem>
         </View>
       </ReactNativeModal>
 
