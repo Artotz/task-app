@@ -10,7 +10,7 @@ export const Root = styled.View<Props>`
   border-radius: 8px;
   background-color: ${(props) => props.theme.colors.common.white};
   overflow: hidden;
-  margin: 16px;
+  margin: 8px 16px 8px 16px;
 `;
 
 export const ColorTag = styled.View<Props>`
@@ -21,12 +21,13 @@ export const ColorTag = styled.View<Props>`
 
 export const ChildrenContainer = styled.View<Props>`
   display: flex;
+  flex-grow: 1;
   border-radius: 8px;
 
-  padding: 8px 8px 16px 16px;
+  padding: 16px 16px 16px 16px;
 
   justify-content: space-between;
-  gap: 30px;
+  gap: 10px;
 
   background-color: ${(props) => props.theme.colors.common.white};
 `;

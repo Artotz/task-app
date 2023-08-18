@@ -48,9 +48,11 @@ export default function SectorPage({ navigation }: { navigation: any }) {
               color={item.color}
             >
               <S.CardView>
-                <Text>{item.name}</Text>
+                <Text style={{ fontSize: 16, fontWeight: "500", color: theme.colors.common["gray-400"] }}>
+                  {item.name}
+                </Text>
                 <TouchableOpacity onPress={() => deleteSector(item.id)}>
-                  <Ionicons size={20} name="close-circle" color={theme.colors.alert.danger} />
+                  <Ionicons size={20} name="trash" color={theme.colors.common["gray-300"]} />
                 </TouchableOpacity>
               </S.CardView>
             </Card>

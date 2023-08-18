@@ -69,7 +69,7 @@ export default function AddSector(props: AddSectorProps) {
             render={({ field }) => (
               <Picker selectedValue={field.value} onValueChange={field.onChange} style={styles.picker} mode="dropdown">
                 {/* Initial option with undefined value */}
-                <Picker.Item label={"Selecione uma cor"} enabled={false} color="#777" />
+                <Picker.Item label={"Selecione uma cor..."} enabled={false} color="#777" />
 
                 {colorList.map((color, index) => (
                   <Picker.Item

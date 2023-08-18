@@ -42,10 +42,6 @@ export const CardView = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-
-  gap: 16px;
-  padding-top: 16px;
 `;
 
 export const HeadingView = styled.View`

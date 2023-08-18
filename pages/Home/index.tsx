@@ -18,6 +18,8 @@ import Card from "../../components/Card";
 
 import * as S from "./styles";
 import TreeItem from "../../components/TreeItem";
+import { theme } from "../../styles/theme";
+import Tag from "../../components/Tag";
 
 export default function Home({ navigation }: { navigation: any }) {
   const { todoList, sectorList, initialize, findSectorById } = useTodoList();
@@ -81,6 +83,7 @@ export default function Home({ navigation }: { navigation: any }) {
     let selectedSectors = sectorSelectionList.filter((sector) => sector.selected);
     let selectedPriorities = prioritySelectionList.filter((priority) => priority.selected);
 
+    setFiltersAppliedQty(`Filtros (${selectedSectors.length + selectedPriorities.length})`);
     if (selectedSectors.length + selectedPriorities.length === 0) {
       //setTodoListFiltered(todoListCopy);
       return todoListToFilter;
@@ -154,6 +157,7 @@ export default function Home({ navigation }: { navigation: any }) {
   const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [isModal3Visible, setIsModal3Visible] = useState(false);
   const [searchBarText, setSearchBarText] = useState("");
+  const [filtersAppliedQty, setFiltersAppliedQty] = useState("Filtros (0)");
   const [sortOptions, setSortOptions] = useState({ priority: 1, dueDate: 1, selected: -1, label: "Ordenar..." });
 
   // Override BackButton Behaviour (Closing the App on Home Page)
@@ -182,11 +186,20 @@ export default function Home({ navigation }: { navigation: any }) {
 
       {/* Filters */}
       <View style={styles.filterInputArea}>
-        <Button onPress={() => setIsModal3Visible(true)}>Filtrar</Button>
+        <Button variant="outline" icon="filter" onPress={() => setIsModal3Visible(true)}>
+          {filtersAppliedQty}
+        </Button>
         <Picker onValueChange={(itemValue, itemIndex) => sortTodoList(itemIndex)} style={styles.picker} mode="dropdown">
-          <Picker.Item key={"0"} label={sortOptions.label} value={-1} color="#777" enabled={false} />
-          <Picker.Item key={"1"} label={"Prioridade"} value={0} color="#000" />
-          <Picker.Item key={"2"} label={"Data Limite"} value={1} color="#000" />
+          <Picker.Item
+            style={{ fontSize: 14 }}
+            key={"0"}
+            label={sortOptions.label}
+            value={-1}
+            color="#777"
+            enabled={false}
+          />
+          <Picker.Item style={{ fontSize: 14 }} key={"1"} label={"Prioridade"} value={0} color="#000" />
+          <Picker.Item style={{ fontSize: 14 }} key={"2"} label={"Data Limite"} value={1} color="#000" />
         </Picker>
       </View>
 
@@ -202,18 +215,49 @@ export default function Home({ navigation }: { navigation: any }) {
               }}
               color={findSectorById(item.sectorId)?.color || "#333"}
             >
-              <View style={{ flex: 0, flexDirection: "row", justifyContent: "space-between", gap: 80 }}>
-                <Text>{item.name}</Text>
+              <View style={{ flex: 0, flexDirection: "row", justifyContent: "space-between" }}>
+                <Text style={{ fontSize: 16, fontWeight: "500", color: theme.colors.common["gray-400"] }}>
+                  {item.name}
+                </Text>
                 <Text>{new Date(item.dueDate).toLocaleDateString()}</Text>
-                <TouchableOpacity onPress={() => console.log(item)}>
+                {/* <TouchableOpacity onPress={() => console.log(item)}>
                   <Ionicons size={20} name="information-circle" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
-              <Text>{item.description}</Text>
-              <Text style={{ fontSize: 10 }}>
-                {findSectorById(item.sectorId) ? findSectorById(item.sectorId)?.name : "Setor não encontrado"} /{" "}
-                {item.priority} prioridade / {item.status}
+              {/* <Text>{item.description}</Text> */}
+              <Text>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis,
+                lectus magna fringilla urna, porttitor...
               </Text>
+              <View style={{ flex: 0, flexDirection: "row", gap: 10 }}>
+                <Tag
+                  icon="pricetag"
+                  iconColor={findSectorById(item.sectorId)?.color}
+                  label={findSectorById(item.sectorId)?.name || "N/A"}
+                />
+                <Tag
+                  icon={"alert-circle"}
+                  iconColor={
+                    item.priority === "Baixa"
+                      ? theme.colors.primary.light
+                      : item.priority === "Média"
+                      ? "orange"
+                      : "red"
+                  }
+                  label={`${item.priority} prioridade`}
+                />
+                <Tag
+                  icon={
+                    item.status == "Pendente"
+                      ? "time"
+                      : item.status === "Em andamento"
+                      ? "hourglass"
+                      : "checkmark-circle"
+                  }
+                  iconColor={item.status === "Pendente" ? "blue" : item.status === "Em andamento" ? "orange" : "green"}
+                  label={item.status}
+                />
+              </View>
             </Card>
           )}
         />
@@ -369,6 +413,6 @@ const styles = StyleSheet.create({
   },
   picker: {
     backgroundColor: "#DDD",
-    width: 190,
+    width: 150,
   },
 });
