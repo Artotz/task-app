@@ -114,11 +114,7 @@ export default function Home({ navigation }: { navigation: any }) {
 
   const sortTodoList = (itemIndex: number) => {
     let todoListCopy = JSON.parse(JSON.stringify(todoListFiltered)) as Todo[];
-    let sortOptionsCopy = JSON.parse(JSON.stringify(sortOptions)) as {
-      priority: number;
-      dueDate: number;
-      selected: number;
-    };
+    let sortOptionsCopy = JSON.parse(JSON.stringify(sortOptions));
 
     if (itemIndex === 1) {
       if (itemIndex === sortOptionsCopy.selected) sortOptionsCopy.priority *= -1;
@@ -134,12 +130,14 @@ export default function Home({ navigation }: { navigation: any }) {
         if (PriorityTypes.indexOf(a.priority) < PriorityTypes.indexOf(b.priority)) return -sortOptionsCopy.priority;
         else return 0;
       });
+      sortOptionsCopy.label = sortOptionsCopy.priority === 1 ? "Prioridade ⬆" : "Prioridade ⬇";
     } else if (itemIndex === 2) {
       todoListCopy.sort((a, b) => {
         if (a.dueDate > b.dueDate) return sortOptionsCopy.dueDate;
         if (a.dueDate < b.dueDate) return -sortOptionsCopy.dueDate;
         else return 0;
       });
+      sortOptionsCopy.label = sortOptionsCopy.dueDate === -1 ? "Data Limite ⬆" : "Data Limite ⬇";
     }
 
     sortOptionsCopy.selected = itemIndex;
@@ -155,7 +153,7 @@ export default function Home({ navigation }: { navigation: any }) {
   const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [isModal3Visible, setIsModal3Visible] = useState(false);
   const [searchBarText, setSearchBarText] = useState("");
-  const [sortOptions, setSortOptions] = useState({ priority: 1, dueDate: 1, selected: -1 });
+  const [sortOptions, setSortOptions] = useState({ priority: 1, dueDate: 1, selected: -1, label: "Ordenar..." });
 
   // Override BackButton Behaviour (Closing the App on Home Page)
   useFocusEffect(
@@ -185,9 +183,9 @@ export default function Home({ navigation }: { navigation: any }) {
       <View style={styles.filterInputArea}>
         <Button onPress={() => setIsModal3Visible(true)}>Filtrar</Button>
         <Picker onValueChange={(itemValue, itemIndex) => sortTodoList(itemIndex)} style={styles.picker} mode="dropdown">
-          <Picker.Item key={"0"} label={"Ordenar..."} value={-1} color="#777" enabled={false} />
-          <Picker.Item key={"1"} label={"Prioridade ⬆⬇"} value={0} color="#000" />
-          <Picker.Item key={"2"} label={"Data Limite ⬆⬇"} value={1} color="#000" />
+          <Picker.Item key={"0"} label={sortOptions.label} value={-1} color="#777" enabled={false} />
+          <Picker.Item key={"1"} label={"Prioridade"} value={0} color="#000" />
+          <Picker.Item key={"2"} label={"Data Limite"} value={1} color="#000" />
         </Picker>
       </View>
 
@@ -329,6 +327,7 @@ const styles = StyleSheet.create({
     maxHeight: 60,
   },
   textInputArea: {
+    flex: 0,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -340,12 +339,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   filterInputArea: {
-    flex: 1,
+    flex: 0,
     flexDirection: "row",
     alignItems: "center",
+    alignSelf: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 60,
-    maxHeight: 60,
+    width: "90%",
+    paddingHorizontal: 10,
   },
   button: {
     paddingHorizontal: 20,
@@ -368,6 +368,6 @@ const styles = StyleSheet.create({
   },
   picker: {
     backgroundColor: "#DDD",
-    width: 170,
+    width: 190,
   },
 });

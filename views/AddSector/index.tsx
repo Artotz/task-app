@@ -85,7 +85,7 @@ export default function AddSector(props: AddSectorProps) {
             name="color"
             rules={{ required: "Color é obrigatória" }}
           />
-          {errors.color && <Text>{errors.color.message}</Text>}
+          {errors.color && <S.ErrorMessage>{errors.color.message}</S.ErrorMessage>}
         </S.InputView>
 
         <S.ButtonView>

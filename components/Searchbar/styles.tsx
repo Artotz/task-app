@@ -11,7 +11,7 @@ export const View = styled.View<Props>`
   display: flex;
   flex-direction: row;
   gap: 8px;
-  width: 80%;
+  width: 90%;
   align-items: center;
 
   padding: 8px 16px;

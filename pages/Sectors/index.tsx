@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, TouchableOpacity, StatusBar, StyleSheet, Text, TextInput, View, Keyboard } from "react-native";
 import ReactNativeModal from "react-native-modal";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useTodoList from "../../data/TodoListContext";
@@ -79,7 +79,7 @@ export default function SectorPage({ navigation }: { navigation: any }) {
         backdropTransitionOutTiming={0}
         isVisible={isModalVisible}
         onBackButtonPress={() => setIsModalVisible(false)}
-        onBackdropPress={() => setIsModal2Visible(false)}
+        onBackdropPress={() => setIsModalVisible(false)}
         onModalWillHide={Keyboard.dismiss}
         coverScreen={true}
       >

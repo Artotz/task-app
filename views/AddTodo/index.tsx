@@ -79,6 +79,7 @@ export default function AddTodo(props: AddTodoProps) {
         {/* DueDate and Sector */}
         <View style={styles.containerFlowRow}>
           <View>
+            <S.InputLabel>Data Limite</S.InputLabel>
             <Controller
               control={control}
               render={({ field }) => (
@@ -106,6 +107,7 @@ export default function AddTodo(props: AddTodoProps) {
           </View>
           {/* Sector */}
           <View>
+            <S.InputLabel>Setor</S.InputLabel>
             <Controller
               control={control}
               render={({ field }) => (
@@ -133,6 +135,7 @@ export default function AddTodo(props: AddTodoProps) {
         {/* Priority and Status */}
         <View style={styles.containerFlowRow}>
           <View>
+            <S.InputLabel>Prioridade</S.InputLabel>
             <Controller
               control={control}
               render={({ field }) => (
@@ -157,6 +160,7 @@ export default function AddTodo(props: AddTodoProps) {
           </View>
 
           <View>
+            <S.InputLabel>Status</S.InputLabel>
             <Controller
               control={control}
               render={({ field }) => (
