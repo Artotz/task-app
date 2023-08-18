@@ -24,6 +24,9 @@ export const View = styled.View<Props>`
 
 export const TextInput = styled.TextInput<Props>`
   color: ${(props: any) => props.theme.colors.common["gray-400"]};
+
+  display: flex;
+  flex-grow: 1;
 `;
 
 export const Icon = styled(Ionicons)<Props>`
