@@ -70,14 +70,20 @@ export default function SectorPage({ navigation }: { navigation: any }) {
 
       {/* AddSector Modal */}
       <ReactNativeModal
-        style={{ marginHorizontal: 0, marginBottom: 0, marginTop: 400 }}
+        style={{
+          marginHorizontal: 0,
+          marginVertical: 0,
+        }}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         backdropTransitionOutTiming={0}
         isVisible={isModalVisible}
         onBackButtonPress={() => setIsModalVisible(false)}
         onBackdropPress={() => setIsModal2Visible(false)}
+        onModalWillHide={Keyboard.dismiss}
+        coverScreen={true}
       >
+        <View style={{ flex: 1 }}></View>
         <AddSector handleCloseButton={() => setIsModalVisible(false)} />
       </ReactNativeModal>
 

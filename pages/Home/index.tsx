@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { BackHandler, FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { BackHandler, FlatList, Keyboard, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
 import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -234,14 +234,20 @@ export default function Home({ navigation }: { navigation: any }) {
 
       {/* AddTodo Modal */}
       <ReactNativeModal
-        style={{ marginHorizontal: 0, marginBottom: 0, marginTop: 180 }}
+        style={{
+          marginHorizontal: 0,
+          marginVertical: 0,
+        }}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         backdropTransitionOutTiming={0}
         isVisible={isModalVisible}
         onBackButtonPress={() => setIsModalVisible(false)}
         onBackdropPress={() => setIsModalVisible(false)}
+        onModalWillHide={Keyboard.dismiss}
+        coverScreen={true}
       >
+        <View style={{ flex: 1 }}></View>
         <AddTodo handleCloseButton={() => setIsModalVisible(false)} />
       </ReactNativeModal>
 

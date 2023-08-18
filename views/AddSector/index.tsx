@@ -37,7 +37,7 @@ export default function AddSector(props: AddSectorProps) {
   };
 
   return (
-    <S.Root style={styles.container}>
+    <S.Root>
       <S.Header>
         <S.HeaderViewText>
           <S.HeaderIcon name="pricetag" />

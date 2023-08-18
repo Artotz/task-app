@@ -33,7 +33,7 @@ export default function AddTodo(props: AddTodoProps) {
   };
 
   return (
-    <S.Root style={styles.container}>
+    <S.Root>
       <S.Header>
         <S.HeaderViewText>
           <S.HeaderIcon name="checkbox" />
@@ -51,11 +51,7 @@ export default function AddTodo(props: AddTodoProps) {
           <Controller
             control={control}
             render={({ field: { onChange } }) => (
-              <InputText
-                onChangeText={onChange}
-                placeholder="Name"
-                style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
-              />
+              <InputText onChangeText={onChange} placeholder="Name" style={{ borderWidth: 1, padding: 5 }} />
             )}
             name="name"
             rules={{ required: "Nome é obrigatório" }}
@@ -100,7 +96,7 @@ export default function AddTodo(props: AddTodoProps) {
                     } as AndroidNativeProps)
                   }
                   placeholder="Due Date"
-                  style={{ borderWidth: 1, marginBottom: 10, padding: 5 }}
+                  style={{ borderWidth: 1, padding: 5 }}
                 />
               )}
               name="dueDate"
@@ -108,25 +104,30 @@ export default function AddTodo(props: AddTodoProps) {
             />
             {errors.dueDate && <S.ErrorMessage>{errors.dueDate.message}</S.ErrorMessage>}
           </View>
-        </View>
-        {/* Sector */}
-        <View>
-          <Controller
-            control={control}
-            render={({ field }) => (
-              <Picker selectedValue={field.value} onValueChange={field.onChange} style={styles.picker} mode="dropdown">
-                {/* Initial option with undefined value */}
-                <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
+          {/* Sector */}
+          <View>
+            <Controller
+              control={control}
+              render={({ field }) => (
+                <Picker
+                  selectedValue={field.value}
+                  onValueChange={field.onChange}
+                  style={styles.picker}
+                  mode="dropdown"
+                >
+                  {/* Initial option with undefined value */}
+                  <Picker.Item label={"Selecione..."} enabled={false} color="#777" />
 
-                {sectorList.map((sector) => (
-                  <Picker.Item key={sector.id} label={sector.name} value={sector.id} color="#000" />
-                ))}
-              </Picker>
-            )}
-            name="sectorId"
-            rules={{ required: "Sector is required" }}
-          />
-          {errors.sectorId && <S.ErrorMessage>{errors.sectorId.message}</S.ErrorMessage>}
+                  {sectorList.map((sector) => (
+                    <Picker.Item key={sector.id} label={sector.name} value={sector.id} color="#000" />
+                  ))}
+                </Picker>
+              )}
+              name="sectorId"
+              rules={{ required: "Sector is required" }}
+            />
+            {errors.sectorId && <S.ErrorMessage>{errors.sectorId.message}</S.ErrorMessage>}
+          </View>
         </View>
 
         {/* Priority and Status */}
@@ -257,6 +258,6 @@ const styles = StyleSheet.create({
   picker: {
     border: 1,
     backgroundColor: "#DDD",
-    width: 170,
+    width: 150,
   },
 });

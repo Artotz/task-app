@@ -3,6 +3,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 export const Root = styled.View`
   display: flex;
+  background-color: white;
   width: 100%;
 
   gap: 16px;
@@ -56,7 +57,7 @@ export const FormSection = styled.View`
 export const InputView = styled.View`
   display: flex;
   width: 100%;
-  gap: 8px;
+  gap: 4px;
 `;
 
 export const InputLabel = styled.Text`

@@ -3,6 +3,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 export const Root = styled.View`
   display: flex;
+  background-color: white;
   width: 100%;
 
   gap: 16px;
