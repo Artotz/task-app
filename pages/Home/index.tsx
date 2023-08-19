@@ -224,11 +224,7 @@ export default function Home({ navigation }: { navigation: any }) {
                   <Ionicons size={20} name="information-circle" />
                 </TouchableOpacity> */}
               </View>
-              {/* <Text>{item.description}</Text> */}
-              <Text>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis,
-                lectus magna fringilla urna, porttitor...
-              </Text>
+              <Text>{item.description}</Text>
               <View style={{ flex: 0, flexDirection: "row", gap: 10 }}>
                 <Tag
                   icon="pricetag"
